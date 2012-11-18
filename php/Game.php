@@ -9,7 +9,7 @@
         private $creatorName;
         
         // Name of the game
-        private $gameName;
+        //private $gameName;
 		// Leaving game name if we want to set a name
 		private $gameID;
         
@@ -20,6 +20,7 @@
         private $player2;
         
         // Board layout for the game
+		/* @var $boardLayout BoardLayout */
         private $boardLayout;
         
         // InputValidator object
@@ -27,21 +28,21 @@
         
         public function createGame($creatorName, $gameID, $player2) {
             $this->validator = new InputValidator();
-            if ($this->validator->ValidateName($creatorName) !== 1) {
+            if ($this->validator->ValidateUserName($creatorName) !== 1) {
                 //echo "invalid player name";
                 throw new Exception("Invalid player name.");
             }
 			
-			if ($this->validator->ValidateName($player2) !== 1) {
+			if ($this->validator->ValidateUserName($player2) !== 1) {
                 //echo "invalid player name";
                 throw new Exception("Invalid player name.");
             }
             
-            if ($this->validator->ValidateName($gameName) !== 1) {
+/*            if ($this->validator->ValidateName($gameName) !== 1) {
                 //echo "invalid game name";
                 throw new Exception("Invalid game name.");
             }
-            
+ */          
             //$this->creatorName = new Player($creatorName);
 			$this->gameID = $gameID;
             $this->player1 = new Player($creatorName);
@@ -92,12 +93,32 @@
 			$this->player2->reconstruct($playersXML[1]);
 			
 			$this->boardLayout = BoardLayout::reconstructLayout($gameID->GameBoard);
+		}
+		
+		public function performDieRoll()
+		{	return rand(1, 6);	}
+		
+		public function setDice($die1, $die2)
+		{
+			if ($die1 > 6 || $die1 < 1 || $die2 > 6 || $die2 < 1)
+				throw new Exception("Invalid Dice Numbers");
+			
+			$resTiles = $this->boardLayout->getTilesMatchingRoll($die1 + $die2);
+			
+			foreach($resTiles as $resTile)
+			{
 				
+			}
+			
 			
 		}
 		
-        private function SetGameName($gameName) {
+/*        private function SetGameName($gameName) {
             $this->gameName = $gameName;
         }
+ 
+ * 
+ */ 
     }
+ 
 ?>

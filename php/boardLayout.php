@@ -54,10 +54,10 @@ class BoardTile	{
 		$this->setResourceType($tileXML->attributes()->ResType);
 		$this->setRollNumber($tileXML->attributes()->DieNumber);
 		
-		$this->topRoad = $tileXML->attibutes()->TR;
-		$this->rightRoad = $tileXML->attibutes()->RR;
-		$this->leftRoad = $tileXML->attibutes()->LR;
-		$this->bottomRoad = $tileXML->attibutes()->BR;
+		$this->topRoad = $tileXML->attributes()->TR;
+		$this->rightRoad = $tileXML->attributes()->RR;
+		$this->leftRoad = $tileXML->attributes()->LR;
+		$this->bottomRoad = $tileXML->attributes()->BR;
 		
 		$this->topLeftCorner = $tileXML->attributes()->TLC;
 		$this->topRightCorner = $tileXML->attributes()->TRC;
@@ -173,6 +173,36 @@ class BoardTile	{
 		}
 	}
 	
+	public function getPlayersforResourceGeneration()
+	{
+		$resArray = array();
+		$resArray = $this->updateResources($this->topLeftCorner, $resArray);
+		$resArray = $this->updateResources($this->topRightCorner, $resArray);
+		$resArray = $this->updateResources($this->bottomLeftCorner, $resArray);
+		$resArray = $this->updateResources($this->bottomRightCorner, $resArray);
+		return $resArray;
+	}
+	
+	private function updateResources($occupation, $resArray)
+	{
+		
+		if ($occupation != "")
+		{	
+			$occ = explode(".", $occupation);
+			# 1 card for settlement (default), 2 for City
+			$resNum = 1;
+			if ($occ[0] == "C")
+				$resNum = 2;
+			
+			if (array_key_exists($occ[1], $resArray))
+					$resArray[$occ[1]] = $resArray[$occ[1]] + $resNum;
+			else
+				$resArray[$occ + 1] = $resNum;
+		}
+		
+		return $resArray;
+	}
+	
 	public function getRoad($position)
 	{
 		$ROAD_POS = array("top", "left", "right", "bottom");
@@ -236,6 +266,7 @@ class BoardLayout	{
 	
 	public function reconstructLayout($boardXML)
 	{
+		$this->fillDieArray();
 		$this->robber["Row"] = $boardXML->Robber->attributes()->Row;
 		$this->robber["Col"] = $boardXML->Robber->attributes()->Col;
 		
@@ -248,9 +279,24 @@ class BoardLayout	{
 			$tempTile = BoardTile(0,0);
 			$tempTile->reconstructTile($tileXML);
 			$this->boardLayout[$tempTile->getRow()] [$tempTile->getColumn()] = $tempTile;
-			
+			$this->tilesByDieNumber[$tempTile->getRollNumber()][] = $tempTile;
 		}
+	}
+	
+	public function getTileByPosition($row, $column)
+	{
+		if ($row > 3 || $column > 3)
+			throw new Exception("Invalid board position.");
 		
+		return $this->boardLayout[$row][$column];
+	}
+	
+	public function getTilesMatchingRoll($rollNumber)
+	{
+		if ($rollNumber > 12 || $rollNumber < 2)
+			throw new Exception("Invalid Roll Number.");		
+			
+		return $this->tilesByDieNumber[$rollNumber];
 	}
 	
 	/*
@@ -287,7 +333,10 @@ class BoardLayout	{
 		return $this->boardLayout;	
 	}
 	
-	
+	private function fillDieArray()
+	{
+		$this->tilesByDieNumber = array_fill(2, 11, array());
+	}
 	
 	private function generateGameBoard($resourceLayout, $dieLayout)	{
 		// Board is 4x4 with 16 resource tiles. Only 15 die rolls because the single desert tile must be 7. 
@@ -295,6 +344,7 @@ class BoardLayout	{
 			throw new Exception("Incorrect resource/die layout.");
 		
 		$this->boardLayout = array();
+		$this->fillDieArray();
 		$resourceIndex = 0;
 		$dieIndex = 0;
 		
@@ -321,8 +371,7 @@ class BoardLayout	{
 				$tile->setRollNumber($rollNumber);
 				$this->boardArray[$row][$column] = $tile;
 				
-				$currTiles = $this->tilesByDieNumber[strval($rollNumber)];
-				
+				$this->tilesByDieNumber[$rollNumber][] = $tile;
 			}
 		}
 	}

@@ -2,28 +2,39 @@
 
 class UserManager
 {
+
+	private static $USER_EXT = "usr";
 	
-	private $userFolder = "/users/";
+	private $userFolder = "users/";
 	private $currentUserFiles;
 
 	public function __construct() {
-		$this->$currentUserFiles = array();
-		foreach(glob($this->userFolder . "/*.usr") as $filename){
-			$this->$currentUserFiles[] = $filename;
-		}
+		$this->currentUserFiles = array();
 		
-		sort($this->currentUserFiles);		
+		$userFiles = scandir($this->userFolder);
+		
+		foreach ($userFiles as $userFile)
+		{
+			if (is_dir($userFile))
+				continue;
+			
+			$fileInfo = pathinfo($userFile);
+			$userID = $fileInfo["filename"];
+			$userFileName = $fileInfo["basename"];
+			$this->currentUserFiles[$userID] = $userFileName;
+			
+		}
 	}
 	
 	public function doesUserExist($userName)
-	{	return in_array($userName . ".usr", $this->currentUserFiles);	}
+	{	return array_key_exists($userName, $this->currentUserFiles);	}
 	
 	public function createUser($userName, $password)
 	{
 		if ($this->doesUserExist($userName))
 			throw new Exception("User already exists");
 		
-		$usrHandle = fopen($this->userFolder . $userName . ".usr");
+		$usrHandle = fopen($this->userFolder . $userName . self::$USER_EXT);
 		$salt = $this->generateSalt(16);
 		$secureHash = $this->generateSecureHash($password, $salt);
 		// Username:SALT:hash:Wins:Loses
@@ -49,7 +60,7 @@ class UserManager
 	*/	
 	private function getUserElement($userName, $position)
 	{
-		$fileContents = fopen($this->userFolder . $username . ".usr");
+		$fileContents = fopen($this->getUserFileName($userName));
 		$userContents = $fileContents[0];
 		$elements = explode(":", $userContents);
 		
@@ -70,7 +81,7 @@ class UserManager
 	
 	public function addUserWin($userName)
 	{
-		$fileContents = fopen($this->userFolder . $username . ".usr");
+		$fileContents = fopen($this->getUserFileName($userName));
 		$userContents = explode(":", $fileContents[0]);
 		$wins = intval($userContents[3]);
 		$userContents[3] = strval($wins + 1);
@@ -91,7 +102,9 @@ class UserManager
 	}
 	
 	private function getUserFileName($userName)
-	{	return $this->userFolder . $userName . ".usr";	}
+	{	if ($this->doesUserExist($userName))
+			return $this->currentUserFiles[$userName];	
+	}
 	
 	private function generateSalt($max = 32) {
 		$baseStr = time() . rand(0, 1000000) . rand(0, 1000000);

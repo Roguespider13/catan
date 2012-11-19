@@ -22,11 +22,23 @@
         // Board layout for the game
 		/* @var $boardLayout BoardLayout */
         private $boardLayout;
+		
+		private $playersByID;
         
         // InputValidator object
         private $validator;
+		
+		public function __construct()
+		{
+			
+		}
+		
+		public function getGameID()
+		{
+			return $this->gameID;
+		}
         
-        public function createGame($creatorName, $gameID, $player2) {
+        public function createGame($gameID, $creatorName, $player2) {
             $this->validator = new InputValidator();
             if ($this->validator->ValidateUserName($creatorName) !== 1) {
                 //echo "invalid player name";
@@ -47,6 +59,8 @@
 			$this->gameID = $gameID;
             $this->player1 = new Player($creatorName);
             $this->player2 = new Player($player2);
+			$this->playersByID[$creatorName] = $this->player1;
+			$this->playersByID[$player2] = $this->player2;
             $this->boardLayout = new BoardLayout();
 			$this->boardLayout->createLayout();
 			
@@ -107,10 +121,31 @@
 			
 			foreach($resTiles as $resTile)
 			{
+				$resForPlayers = $resTile->getPlayersforResourceGeneration();
+				
+				foreach ($resForPlayers as $playerIDs)
+				{
+					/* @var $playerToken Player */
+					$playerToken = $this->getPlayerToken($playerID);
+					$playerToken->addCard($resTile->getResourceType(), $playerID[0]);
+				}
 				
 			}
 			
 			
+		}
+		
+		private function getPlayerToken($playerID)
+		{
+			if (!$this->isPlayer($playerID))
+				throw new Exception("Invalid Player.");
+			
+			return $this->playersByID[$playerID];
+		}
+		
+		public function isPlayer($playerID)
+		{
+			return in_array($playerID, $this->playersByID);
 		}
 		
 /*        private function SetGameName($gameName) {

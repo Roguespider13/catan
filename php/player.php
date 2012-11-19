@@ -30,7 +30,7 @@ class Player {
 	}
 
 	public function addCard($cardType, $number) {
-		if ($number > 2 && $number < 1)
+		if ($number > 4 && $number < 1)
 			throw new Exception("Invalid number of cards");
 
 		if (!in_array($cardType, self::$CARDTYPES))

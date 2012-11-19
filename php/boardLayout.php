@@ -189,13 +189,14 @@ class BoardTile	{
 		if ($occupation != "")
 		{	
 			$occ = explode(".", $occupation);
+			
 			# 1 card for settlement (default), 2 for City
 			$resNum = 1;
 			if ($occ[0] == "C")
 				$resNum = 2;
 			
 			if (array_key_exists($occ[1], $resArray))
-					$resArray[$occ[1]] = $resArray[$occ[1]] + $resNum;
+				$resArray[$occ[1]] = $resArray[$occ[1]] + $resNum;
 			else
 				$resArray[$occ + 1] = $resNum;
 		}

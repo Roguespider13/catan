@@ -92,7 +92,7 @@ class UserManager
 	
 	public function addUserLoss($userName)
 	{
-		$fileContents = fopen($this->userFolder . $username . ".usr");
+		$fileContents = fopen($this->userFolder . $userName . ".usr");
 		$userContents = explode(":", $fileContents[0]);
 		$losses = intval($userContents[4]);
 		$userContents[3] = strval($losses + 1);

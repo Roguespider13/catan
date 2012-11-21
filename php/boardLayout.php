@@ -156,6 +156,9 @@ class BoardTile	{
 	{
 		$SETTLECITY_POS = array("topLeft", "topRight", "bottomLeft" , "bottomRight");
 		
+		if (!in_array($position, $SETTLECITY_POS))
+				throw new Exception("Invalid Build Position");
+		
 		switch($position)
 		{
 			case "topLeft":
@@ -171,6 +174,16 @@ class BoardTile	{
 				return $this->bottomRightCorner;
 				break;	
 		}
+	}
+	
+	public function getPlayerOccupation($position)
+	{
+		$occupationString = $this->getOccupation($position);
+		if ($occupationString == "")
+			return "";
+		
+		$expOcc = explode(".", $occupationString);
+		return $expOcc[1];
 	}
 	
 	public function getPlayersforResourceGeneration()
@@ -375,6 +388,271 @@ class BoardLayout	{
 				$this->tilesByDieNumber[$rollNumber][] = $tile;
 			}
 		}
+	}
+	
+	
+	/* Unlike the complexity of building a road or settlement.
+	 * A city can only be built where a settlement exists. It doesn't
+	 * depend on linking structures.
+	 */
+	public function canBuildCity($playerID, $x, $y, $position)
+	{
+		if (!$this->insideBoardBoundaries($x, $y))
+			throw new Exception("Outside board boundaries.");
+		
+		$tile = $this->boardLayout[$x][$y];
+		if ($tile->getPlayerOccupation($position) != $playerID)
+			return false;
+		return true;
+	}
+	
+	public function buildCity($playerID, $x, $y, $position)
+	{
+		if (! $this->canBuildCity($playerID, $x, $y, $position))
+			throw new Exception("Cannot build there.");
+		
+		$tile = $this->boardLayout[$x][$y];
+		$tile->buildCity($playerID, $position);
+		
+		switch ($position)
+		{
+			case "topRight":
+				
+		}
+	}
+	
+	/*
+	 * Building a settlement requires 2 things
+	 * 1. A connecting road
+	 * 2. No other settlements 1 road length away (even if road doesn't exist).
+	 * This requires a lot of checking
+	 */
+	public function canBuildSettlement($playerID, $x, $y, $position)
+	{
+		if (!$this->insideBoardBoundaries($x, $y))
+			throw new Exception("Outside board boundaries.");
+		
+		$tile = $this->boardLayout[$x][$y];
+		$settlePoint = $tile->getOccupation($position);
+		$adjTile1 = "";
+		$adjTile2 = "";
+		$adjRoads = array();
+		$adjOccupations = array();
+		
+		if (preg_match('/^top/', $position))	{	
+			$adjRoads[] = $tile->getRoad("top");
+			if ($x > 0)
+				$adjTile1 = $this->boardLayout[$x-1][$y];
+		}
+		if (preg_match('/^bottom/', $position))	{
+			$adjRoads[] = $tile->getRoad("bottom");	
+			if ($x < 3)
+				$adjTile1 = $this->boardLayout[$x+1][$y];
+		}
+		if (preg_match('/Right$/', $position))	{	
+			$adjRoads[] = $tile->getRoad("right");
+			if ($y < 3)
+				$adjTile2 = $this->boardLayout[$x][$y+1];
+		}
+		if (preg_match('/Left$/', $position))	{	
+			$adjRoads[] = $tile->getRoad("left");
+			if ($y > 0)
+				$adjTile2 = $this->boardLayout[$x][$y-1];
+		}
+		
+		if ($adjTile1)
+			$adjOccupations[] = $adjTile1->getOccupation($position);
+		if ($adjTile2)
+			$adjOccupations[] = $adjTile2->getOccupation($position);
+		
+		switch ($position)
+		{
+			case "topRght":
+				$adjOccupations[] = $tile->getOccupation("topLeft");
+				$adjOccupations[] = $tile->getOccupation("bottomRight");
+						
+				if ($adjTile1)
+					$adjRoads[] = $adjTile1->getRoad("right");
+
+				if ($adjTile2)
+					$adjRoads[] = $adjTile2->getRoad("top");
+				break;
+			
+			case "topLeft":
+				$adjOccupations[] = $tile->getOccupation("topRight");
+				$adjOccupations[] = $tile->getOccupation("bottomLeft");
+						
+				if ($adjTile1)
+					$adjRoads[] = $adjTile1->getRoad("left");
+				if ($adjTile2)
+					$adjRoads[] = $adjTile2->getRoad("top");
+				break;
+			case "bottomLeft":
+				$adjOccupations[] = $tile->getOccupation("topLeft");
+				$adjOccupations[] = $tile->getOccupation("bottomRight");
+						
+				if ($adjTile1)
+					$adjRoads[] = $adjTile1->getRoad("left");
+				if ($adjTile2)
+					$adjRoads[] = $adjTile2->getRoad("bottom");
+				break;
+			case "bottomRight":
+				$adjOccupations[] = $tile->getOccupation("topRight");
+				$adjOccupations[] = $tile->getOccupation("bottomLeft");
+						
+				if ($adjTile1)
+					$adjRoads[] = $adjTile1->getRoad("right");
+				if ($adjTile2)
+					$adjRoads[] = $adjTile2->getRoad("bottom");
+				break;
+			
+		}
+		
+		if ($settlePoint != "")
+			return false;
+		
+		if (! in_array($playerID, $adjRoads))
+			return false;
+		
+		if (!empty($adjOccupations))
+			return false;
+		
+		return true;
+	}
+	
+	public function buildSettlement($playerID, $position, $x, $y)
+	{
+		if (! $this->canBuildSettlement)
+			throw new Exception("Cannot build there.");
+		
+		$tile = $this->boardLayout[$x][$y];
+		$tile->buildSettlement($playerID, $position);
+	}
+	
+	/*
+	 * Building a road requires 1 of 2 things:
+	 * 1. A road to connect to
+	 * 2. A settlement to connect to.
+	 * Even more checking.
+	 */
+	public function canBuildRoad($playerID, $position, $x, $y)
+	{
+		if (!$this->insideBoardBoundaries($x, $y))
+			throw new Exception("Outside board boundaries.");
+		
+		$tile = $this->boardLayout[$x][$y];
+		
+		if ($tile->getRoad($position) != "")
+			return false;
+		
+		if ($x > 0)
+			$upperTile = $this->boardLayout[$x-1][$y];
+		if ($x < 3)
+			$lowerTile = $this->boardLayout[$x+1][$y];
+		if ($y > 0)
+			$leftTile = $this->boardLayout[$x][$y-1];
+		if ($y < 3)
+			$rightTile = $this->boardLayout[$x][$y+1];
+		
+		// In this case adjRoads isn't just roads but also connecting settlements/cities.
+		$adjRoads = array();
+		
+		
+		switch ($position)
+		{
+			case "top":
+				if ($tile->getRoad("top") != "")
+					return false;
+				$adjRoads[] = $tile->getRoad("left");
+				$adjRoads[] = $tile->getRoad("right");
+				if ($leftTile) //Left
+					$adjRoads[] = $leftTile->getRoad("top");
+				if ($upperTile) //Upper
+				{
+					$adjRoads[] = $upperTile->getRoad("left");
+					$adjRoads[] = $upperTile->getRoad("right");
+				}
+				if ($rightTile) //Right
+					$adjRoads[] = $rightTile->getRoad("top");
+				
+				$adjRoads[] = $tile->getPlayerOccupation("topLeft");
+				$adjRoads[] = $tile->getPlayerOccupation("topRight");
+				break;
+				
+			case "left":
+				if ($tile->getRoad("left") != "")
+					return false;
+				$adjRoads[] = $tile->getRoad("top");
+				$adjRoads[] = $tile->getRoad("bottom");
+				if ($lowerTile) //Bottom
+					$adjRoads[] = $lowerTile->getRoad("left");
+				if ($leftTile) //Left
+				{
+					$adjRoads[] = $leftTile->getRoad("top");
+					$adjRoads[] = $leftTile->getRoad("bottom");
+				}
+				if ($upperTile) // Upper
+					$adjRoads[] = $upperTile->getRoad("left");
+				$adjRoads[] = $tile->getPlayerOccupation("topLeft");
+				$adjRoads[] = $tile->getPlayerOccupation("topRight");
+				break;
+			case "right":
+				if ($tile->getRoad("right") != "")
+					return false;
+				$adjRoads[] = $tile->getRoad("top");
+				$adjRoads[] = $tile->getRoad("bottom");
+				if ($upperTile) //Upper
+					$adjRoads[] = $upperTile->getRoad("right");
+				if ($rightTile) //Right
+				{
+					$adjRoads[] = $rightTile->getRoad("top");
+					$adjRoads[] = $rightTile->getRoad("bottom");
+				}
+				if ($lowerTile) // Lower
+					$adjRoads[] = $lowerTile->getRoad("right");
+				$adjRoads[] = $tile->getPlayerOccupation("topRight");
+				$adjRoads[] = $tile->getPlayerOccupation("bottomRight");
+				break;
+			case "top":
+				if ($tile->getRoad("bottom") != "")
+					return false;
+				$adjRoads[] = $tile->getRoad("left");
+				$adjRoads[] = $tile->getRoad("right");
+				if ($rightTile) //Right
+					$adjRoads[] = $rightTile->getRoad("bottom");
+				if ($lowerTile) //Lower
+				{
+					$adjRoads[] = $lowerTile->getRoad("left");
+					$adjRoads[] = $lowerTile->getRoad("right");
+				}
+				if ($leftTile) //Left
+					$adjRoads[] = $leftTile->getRoad("bottom");
+				
+				$adjRoads[] = $tile->getPlayerOccupation("bottomLeft");
+				$adjRoads[] = $tile->getPlayerOccupation("bottomRight");
+				break;
+		}
+		
+		if (in_array($playerID, $adjRoads))
+			return true;
+		
+		return false;	
+	}
+	
+	public function buildRoad($playerID, $position, $x, $y)
+	{
+		if (! $this->canBuildRoad($playerID, $position, $x, $y))
+			throw new Exception("Cannot Build there.");
+		
+		$tile = $this->boardLayout[$x][$y];
+		$tile->buildRoad($playerID, $position);
+	}
+		
+	private function insideBoardBoundaries($x, $y)
+	{
+		if ($x < 0 || $y < 0 || $x > 3 || $y > 3)
+			return false;
+		return true;
 	}
 }
 ?>

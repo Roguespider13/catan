@@ -5,12 +5,13 @@ class Player {
 	private static $CARDTYPES = array("brick", "lumber", "ore", "wheat", "wool");
 	
 	private $id;
-
-	private $brickCards = 0;
-	private $lumberCards = 0;
+	
+	// Players start with these initial resources so they can build their initial settlements/roads.
+	private $brickCards = 4;
+	private $lumberCards = 4;
 	private $oreCards = 0;
-	private $wheatCards = 0;
-	private $woolCards = 0;
+	private $wheatCards = 2;
+	private $woolCards = 2;
 	
 	private $victoryPoints = 0;
 
@@ -68,6 +69,13 @@ class Player {
 		return $cardArray;
 	}
 	
+	public function canBuildRoad()
+	{
+		if ($this->brickCards >= 1 && $this->lumberCards >= 1)
+			return true;
+		return false;
+	}
+	
 	public function buildRoad()	{
 		if ($this->brickCards < 1 || $this->lumberCards < 1)
 			//return false;
@@ -79,6 +87,15 @@ class Player {
 		return true;
 	}
 	
+	public function canBuildSettlement()
+	{
+		if ($this->brickCards >= 1 && $this->lumberCards >= 1 && $this->wheatCards >= 1 && $this->woolCards >= 1)
+			return true;
+		
+		return false;
+	}
+
+
 	/*
 	 * Settlements are built with 1 of each card, except ore.
 	 * Settlements provide 1 Victory Point.
@@ -98,6 +115,13 @@ class Player {
 		$this->victoryPoints += 1;
 		return true;
 
+	}
+	
+	public function canUpgradeCity()
+	{
+		if ($this->wheatCards >= 2 && $this->oreCards >= 3)
+			return true;
+		return false;
 	}
 	
 	/*

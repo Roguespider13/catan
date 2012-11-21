@@ -414,11 +414,68 @@ class BoardLayout	{
 		$tile = $this->boardLayout[$x][$y];
 		$tile->buildCity($playerID, $position);
 		
+		$this->updateBuilding($playerID, $x, $y, $position, "city");
+	}
+	
+	private function updateBuilding($playerID, $x, $y, $position, $type)
+	{
 		switch ($position)
 		{
 			case "topRight":
+				if ($x > 0)
+					$this->updateBuildingTile($playerID, $this->boardLayout[$x-1][$y], "bottomRight", $type);
+					//$this->boardLayout[$x-1][$y]->buildCity($playerID, "bottomRight");
+				if ($y < 3)
+					$this->updateBuildingTile($playerID, $this->boardLayout[$x][$y+1], "topLeft", $type);
+					//$this->boardLayout[$x][$y+1]->buildCity($playerID, "topLeft");
+				if ($x> 0 && $y < 3)
+					$this->updateBuildingTile($playerID, $this->boardLayout[$x-1][$y+1], "bottomLeft", $type);
+					//$this->boardLayout[$x-1][$y+1]->buildCity($playerID, "bottomLeft");
+				break;
 				
+			case "topLeft":
+				if ($x > 0)
+					$this->updateBuildingTile($playerID, $this->boardLayout[$x-1][$y], "bottomLeft", $type);
+					//$this->boardLayout[$x-1][$y]->buildCity($playerID, "bottomLeft");
+				if ($y > 0)
+					$this->updateBuildingTile($playerID, $this->boardLayout[$x][$y-1], "topRight", $type);
+					//$this->boardLayout[$x][$y-1]->buildCity($playerID, "topRight");
+				if ($x> 0 && $y > 0)
+					$this->updateBuildingTile($playerID, $this->boardLayout[$x-1][$y-1], "bottomRight", $type);
+					//$this->boardLayout[$x-1][$y-1]->buildCity($playerID, "bottomRight");
+				break;
+				
+			case "bottomRight":
+				if ($x < 3)
+					$this->updateBuildingTile($playerID, $this->boardLayout[$x+1][$y], "topRight", $type);
+					//$this->boardLayout[$x+1][$y]->buildCity($playerID, "topRight");
+				if ($y < 3)
+					$this->updateBuildingTile($playerID, $this->boardLayout[$x][$y+1], "bottomLeft", $type);
+					///$this->boardLayout[$x][$y+1]->buildCity($playerID, "bottomLeft");
+				if ($x < 3 && $y < 3)
+					$this->updateBuildingTile($playerID, $this->boardLayout[$x+1][$y+1], "topLeft", $type);
+					//$this->boardLayout[$x+1][$y+1]->buildCity($playerID, "topLeft");
+				break;
+			case "bottomLeft":
+				if ($x < 3)
+					$this->updateBuildingTile($playerID, $this->boardLayout[$x+1][$y], "topLeft", $type);
+					//$this->boardLayout[$x+1][$y]->buildCity($playerID, "topLeft");
+				if ($y > 0)
+					$this->updateBuildingTile($playerID, $this->boardLayout[$x][$y-1], "bottomRight", $type);
+					//$this->boardLayout[$x][$y-1]->buildCity($playerID, "bottomRight");
+				if ($x < 3 && $y > 0)
+					$this->updateBuildingTile($playerID, $this->boardLayout[$x+1][$y+1], "topRight", $type);
+					//$this->boardLayout[$x+1][$y+1]->buildCity($playerID, "topRight");
+				break;
 		}
+	}
+	
+	private function updateBuildingTile($playerID, $tile, $position, $type)
+	{
+		if ($type == "city")
+			$tile->buildCity($playerID, $position);
+		if ($type == "settlement")
+			$tile->buildSettlement($playerID, $position);		
 	}
 	
 	/*
@@ -520,13 +577,15 @@ class BoardLayout	{
 		return true;
 	}
 	
-	public function buildSettlement($playerID, $position, $x, $y)
+	public function buildSettlement($playerID, $x, $y, $position)
 	{
 		if (! $this->canBuildSettlement)
 			throw new Exception("Cannot build there.");
 		
 		$tile = $this->boardLayout[$x][$y];
 		$tile->buildSettlement($playerID, $position);
+		
+		$this->updateBuilding($playerID, $x, $y, $position, "settlement");
 	}
 	
 	/*

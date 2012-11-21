@@ -417,6 +417,8 @@ class BoardLayout	{
 		$this->updateBuilding($playerID, $x, $y, $position, "city");
 	}
 	
+	
+	// Used to update tiles around current one when buildin Cities and Settlements.
 	private function updateBuilding($playerID, $x, $y, $position, $type)
 	{
 		switch ($position)
@@ -470,6 +472,7 @@ class BoardLayout	{
 		}
 	}
 	
+	// Used to update the specific tilesa and call the correct function based on type (Settlement/City).
 	private function updateBuildingTile($playerID, $tile, $position, $type)
 	{
 		if ($type == "city")
@@ -477,6 +480,7 @@ class BoardLayout	{
 		if ($type == "settlement")
 			$tile->buildSettlement($playerID, $position);		
 	}
+	
 	
 	/*
 	 * Building a settlement requires 2 things
@@ -698,13 +702,37 @@ class BoardLayout	{
 		return false;	
 	}
 	
-	public function buildRoad($playerID, $position, $x, $y)
+	public function buildRoad($playerID, $x, $y, $position)
 	{
 		if (! $this->canBuildRoad($playerID, $position, $x, $y))
 			throw new Exception("Cannot Build there.");
 		
 		$tile = $this->boardLayout[$x][$y];
 		$tile->buildRoad($playerID, $position);
+		$this->updateRoad($playerID, $x, $y, $position);
+	}
+	
+	public function updateRoad($playerID, $x, $y, $position)
+	{
+		switch($position)
+		{
+			case "top":
+				if ($x > 0)
+					$this->boardLayout[$x-1][$y]->buildRoad($playerID, "bottom");
+				break;
+			case "bottom":
+				if ($x < 3)
+					$this->boardLayout[$x+1][$y]->buildRoad($playerID, "top");
+				break;
+			case "left":
+				if ($y > 0)
+					$this->boardLayout[$x][$y-1]->buildRoad($playerID, "right");
+				break;
+			case "right":
+				if ($x < 3)
+					$this->boardLayout[$x][$y+1]->buildRoad($playerID, "left");
+				break;
+		}
 	}
 		
 	private function insideBoardBoundaries($x, $y)

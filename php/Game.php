@@ -112,27 +112,28 @@
 		public function performDieRoll()
 		{	return rand(1, 6);	}
 		
+		
 		public function setDice($die1, $die2)
 		{
 			if ($die1 > 6 || $die1 < 1 || $die2 > 6 || $die2 < 1)
 				throw new Exception("Invalid Dice Numbers");
 			
+			//This section generates the resources for all the players based on the roll.
+			
 			$resTiles = $this->boardLayout->getTilesMatchingRoll($die1 + $die2);
 			
 			foreach($resTiles as $resTile)
 			{
+				// Returns an array/dict with player id being the key, and number of resources being the value.
 				$resForPlayers = $resTile->getPlayersforResourceGeneration();
 				
-				foreach ($resForPlayers as $playerIDs)
+				foreach ($resForPlayers as $player => $resourceNum)
 				{
 					/* @var $playerToken Player */
-					$playerToken = $this->getPlayerToken($playerID);
-					$playerToken->addCard($resTile->getResourceType(), $playerID[0]);
+					$playerToken = $this->getPlayerToken($player);
+					$playerToken->addCard($resTile->getResourceType(), $resourceNum);
 				}
-				
 			}
-			
-			
 		}
 		
 		private function getPlayerToken($playerID)
@@ -143,17 +144,56 @@
 			return $this->playersByID[$playerID];
 		}
 		
+		// Position can be left, right, top, bottom.
+		// Need to check if possible to build before building (since it cost resources.
+		public function buildRoad($playerID, $x, $y, $buildPosition)
+		{
+			$playerToken = $this->getPlayer($playerID);
+			if ( !$playerToken->canBuildRoad() )
+				throw new Exception("Do not have the resources to build.");
+			
+			if (!$this->boardLayout->canBuildRoad($playerID, $x, $y, $buildPosition))
+				throw new Exception("Can not build there.");
+			
+			$playerToken->buildRoad();
+			$this->boardLayout->buildRoad($playerID, $x, $y, $buildPosition);				
+		}
+		
+		// Position can be topLeft, topRight, bottomLeft, or bottomRight.
+		// Need to check if possible to build before building (since it cost resources.
+		public function buildSettlement($playerID, $x, $y, $buildPosition)
+		{
+			$playerToken = $this->getPlayer($playerID);
+			if ( !$playerToken->canBuildSettlement() )
+				throw new Exception("Do not have the resources to build.");
+			
+			if (!$this->boardLayout->canBuildSettlement($playerID, $x, $y, $buildPosition))
+				throw new Exception("Can not build there.");
+			
+			$playerToken->buildSettlement();
+			$this->boardLayout->buildSettlement($playerID, $x, $y, $roadPosition);				
+		}
+		
+		// Position can be topLeft, topRight, bottomLeft, or bottomRight.
+		// Need to check if possible to build before building (since it cost resources.
+		public function buildCity($playerID, $x, $y, $buildPosition)
+		{
+			$playerToken = $this->getPlayer($playerID);
+			if ( !$playerToken->canBuildSettlement() )
+				throw new Exception("Do not have the resources to build.");
+			
+			if (!$this->boardLayout->canBuildSettlement($playerID, $x, $y, $buildPosition))
+				throw new Exception("Can not build there.");
+			
+			$playerToken->buildSettlement();
+			$this->boardLayout->buildSettlement($playerID, $x, $y, $buildPosition);				
+		}
+		
 		public function isPlayer($playerID)
 		{
 			return in_array($playerID, $this->playersByID);
 		}
-		
-/*        private function SetGameName($gameName) {
-            $this->gameName = $gameName;
-        }
- 
- * 
- */ 
+
     }
  
 ?>

@@ -117,7 +117,7 @@ class Player {
 
 	}
 	
-	public function canUpgradeCity()
+	public function canBuildCity()
 	{
 		if ($this->wheatCards >= 2 && $this->oreCards >= 3)
 			return true;
@@ -129,7 +129,7 @@ class Player {
 	 * Cities provide 2 victory points but are upgraded from Settlements,
 	 *	so player only gains 1 additional victory point.
 	 */
-	public function upgradeCity()	{
+	public function buildCity()	{
 		if ($this->wheatCards < 2 || $this->oreCards < 3)
 			//return false;
 			throw new Exception("Unavailable Resources");

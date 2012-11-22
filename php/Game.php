@@ -171,7 +171,7 @@
 				throw new Exception("Can not build there.");
 			
 			$playerToken->buildSettlement();
-			$this->boardLayout->buildSettlement($playerID, $x, $y, $roadPosition);				
+			$this->boardLayout->buildSettlement($playerID, $x, $y, $buildPosition);				
 		}
 		
 		// Position can be topLeft, topRight, bottomLeft, or bottomRight.

@@ -29,6 +29,12 @@ class Player {
 		$this->wheatCards = $resNode->Wheat;
 		$this->woolCards = $resNode->Wool;		
 	}
+	
+	public function getPlayerID()
+	{	return $this->id;	}
+	
+	public function getVictoryPoints()
+	{	return $this->victoryPoints;	}
 
 	public function addCard($cardType, $number) {
 		if ($number > 4 && $number < 1)

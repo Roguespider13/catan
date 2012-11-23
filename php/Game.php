@@ -2,10 +2,13 @@
     require_once 'boardLayout.php';
     require_once 'player.php';
     require_once 'InputValidator.php';
+	require_once 'logManager.php';
     
     // Each game has a creator, two participants, and a board layout
     class Game {
         // Name of the game creator as entered when creating the game
+		
+		private static $POINTS_TO_WIN = 8;
         private $creatorName;
         
         // Name of the game
@@ -27,6 +30,9 @@
         
         // InputValidator object
         private $validator;
+		private $gameLogFile;
+		
+		private $playerTurn;
 		
 		public function __construct()
 		{
@@ -65,12 +71,28 @@
 			$this->boardLayout->createLayout();
 			
 			$this->createGameXML();
+			$logManager = new LogManager();
+			$this->gameLogFile = $logManager->createGameLogFile($gameID);
+			$this->writeToLog("Game has started.\Player 1: " . $creatorName . "\nPlayer 2: " . $player2);
+			$this->playerTurn = $creatorName;
         }
+		
+		// Line endings are automatically added to the passed string. 
+		private function writeToLog($string)
+		{
+			if ($this->gameLogFile == "")
+				throw new Exception("Log File not found. Unable to write to log.");
+			
+			$logHandle = fopen($this->gameID, "a");
+			fwrite($logHandle, $string . "\n");
+			fclose($logHandle);
+		}
 		
 
 		private function createGameXML()
 		{
-			$xmlFileName = GameManager::getGameXML($this->gameID);
+			$gameManager = new GameManager();
+			$xmlFileName = $gameManager->getGameXML($this->gameID);
 			
 			$xmlDoc = new DOMDocument('1.0');
 			$rootNode = $xmlDoc->createElement("CatanGame");
@@ -82,6 +104,7 @@
 			$rootNode->appendChild($gameNumXML);
 			
 			$playersXML = $xmlDoc->createElement("Players");
+			$playersXML->setAttribute("turn", $this->playerTurn);
 			$rootNode->appendChild($playersXML);
 			$playersXML->appendChild($this->player1->getPlayerXML($xmlDoc, "Player"));
 			$playersXML->appendChild($this->player2->getPlayerXML($xmlDoc, "Player"));
@@ -98,8 +121,11 @@
 			if ($gameXML->GameNumber != $this->gameID)
 				throw new Exception("Bad Game XML.");
 			$playersXML = $gameXML->Players;
+			
 			if (count($playersXML) != 2)
 				throw new Exception("Bad Game XML.");
+			
+			$this->playerTurn = $playersXML->attributes()->turn;
 			$this->player1 = Player($playersXML[0]->attributes()->id);
 			$this->player1->reconstruct($playersXML[0]);
 			
@@ -107,6 +133,10 @@
 			$this->player2->reconstruct($playersXML[1]);
 			
 			$this->boardLayout = BoardLayout::reconstructLayout($gameID->GameBoard);
+			
+			$logManager = new LogManager();
+			$this->gameLogFile = $logManager->getOngoingLogFile($gameID);
+			$this->checkWinningConditions();
 		}
 		
 		public function performDieRoll()
@@ -118,10 +148,12 @@
 			if ($die1 > 6 || $die1 < 1 || $die2 > 6 || $die2 < 1)
 				throw new Exception("Invalid Dice Numbers");
 			
+			$this->writeToLog("Dice have been rolled: " . $die1 . "," . $die2);
+			
 			//This section generates the resources for all the players based on the roll.
 			
 			$resTiles = $this->boardLayout->getTilesMatchingRoll($die1 + $die2);
-			
+			/* @var $resTile BoardTile */
 			foreach($resTiles as $resTile)
 			{
 				// Returns an array/dict with player id being the key, and number of resources being the value.
@@ -132,8 +164,19 @@
 					/* @var $playerToken Player */
 					$playerToken = $this->getPlayerToken($player);
 					$playerToken->addCard($resTile->getResourceType(), $resourceNum);
+					$this->writeToLog("Resource Generation: Player " . $player . " gets " . $resourceNum . " " . $resTile->getResourceType() . " cards.");
 				}
 			}
+			
+			$this->createGameXML();
+		}
+		
+		private function checkWinningConditions()
+		{
+			if ($this->player1->getVictoryPoints() == self::$POINTS_TO_WIN)
+				throw new GameOverException($this->player1->getPlayerID());
+			if ($this->player2->getVictoryPoints() == self::$POINTS_TO_WIN)
+				throw new GameOverException($this->player2->getPlayerID());
 		}
 		
 		private function getPlayerToken($playerID)
@@ -144,6 +187,31 @@
 			return $this->playersByID[$playerID];
 		}
 		
+		public function getPlayersTurn()
+		{
+			return $this->playerTurn;
+		}
+		
+		public function isPlayersTurn($playerID)
+		{
+			return ($this->playerTurn == $playerID);
+		}
+		
+		public function endPlayersTurn()
+		{
+			
+			foreach(array_keys($this->playersByID) as $playerID)
+				if ($this->playerTurn != $playerID)
+				{
+					$this->writeToLog("Player " . $this->playerTurn . " has ended his turn. Control now goes to " . $playerID);
+					$this->playerTurn = $playerID;
+					$this->createGameXML();
+					$this->checkWinningConditions();
+					return true;
+				}
+		}
+
+
 		// Position can be left, right, top, bottom.
 		// Need to check if possible to build before building (since it cost resources.
 		public function buildRoad($playerID, $x, $y, $buildPosition)
@@ -156,7 +224,10 @@
 				throw new Exception("Can not build there.");
 			
 			$playerToken->buildRoad();
-			$this->boardLayout->buildRoad($playerID, $x, $y, $buildPosition);				
+			$this->boardLayout->buildRoad($playerID, $x, $y, $buildPosition);
+			
+			$this->writeToLog("Player " . $playerID . " has built a road on tile (" . $x . "," . $y . "), position: " . $buildPosition);
+			$this->createGameXML();
 		}
 		
 		// Position can be topLeft, topRight, bottomLeft, or bottomRight.
@@ -171,7 +242,10 @@
 				throw new Exception("Can not build there.");
 			
 			$playerToken->buildSettlement();
-			$this->boardLayout->buildSettlement($playerID, $x, $y, $buildPosition);				
+			$this->boardLayout->buildSettlement($playerID, $x, $y, $buildPosition);
+			$this->writeToLog("Player " . $playerID . " has built a settlement on tile (" . $x . "," . $y . "), position: " . $buildPosition);
+			$this->createGameXML();
+			$this->checkWinningConditions();
 		}
 		
 		// Position can be topLeft, topRight, bottomLeft, or bottomRight.
@@ -179,14 +253,18 @@
 		public function buildCity($playerID, $x, $y, $buildPosition)
 		{
 			$playerToken = $this->getPlayer($playerID);
-			if ( !$playerToken->canBuildSettlement() )
+			if ( !$playerToken->canBuildCity() )
 				throw new Exception("Do not have the resources to build.");
 			
-			if (!$this->boardLayout->canBuildSettlement($playerID, $x, $y, $buildPosition))
+			if (!$this->boardLayout->canBuildCity($playerID, $x, $y, $buildPosition))
 				throw new Exception("Can not build there.");
 			
-			$playerToken->buildSettlement();
-			$this->boardLayout->buildSettlement($playerID, $x, $y, $buildPosition);				
+			$playerToken->buildCity();
+			$this->boardLayout->buildCity($playerID, $x, $y, $buildPosition);	
+			
+			$this->writeToLog("Player " . $playerID . " has built a city on tile (" . $x . "," . $y . "), position: " . $buildPosition);
+			$this->createGameXML();
+			$this->checkWinningConditions();
 		}
 		
 		public function isPlayer($playerID)
@@ -195,5 +273,25 @@
 		}
 
     }
+	
+	class GameOverException extends Exception
+	{
+		private $winningPlayer = "";
+		
+		public function __construct($message, $code = 0, Exception $previous = null)
+		{
+			$this->winningPlayer = $message;
+			parent::__construct($message, $code, $previous);
+		}
+		public function getErrorMessage()
+		{
+			return "The game is now over. Player " . $this->getMessage() . " has won.";
+		}
+		
+		public function getWinningPlayerID()
+		{
+			return $this->winningPlayer;
+		}
+	}
  
 ?>

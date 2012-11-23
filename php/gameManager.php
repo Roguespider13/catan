@@ -24,14 +24,17 @@ class GameManager	{
 			$fileInfo = pathinfo($gameFile);
 			$gameID = $fileInfo["filename"];
 			$gameFileName = $fileInfo["basename"];
+			$extension = "";
+			if (array_key_exists("extension", $fileInfo))
+				$extension = $fileInfo["extension"];
 			
-			if ($fileInfo["extension"] == self::$WAIT_EXT)
+			if ($extension == self::$WAIT_EXT)
 			{
-				$this->waitingGameList[$gameID] = $gameFileName;
+				$this->waitingGameList[$gameID] = $this->gameFolder . $gameFileName;
 			}
-			else if ($fileInfo["extension"] == self::$GAME_EXT)
+			else if ($extension == self::$GAME_EXT)
 			{
-				$this->currentGameList[$gameID] = $gameFileName;
+				$this->currentGameList[$gameID] = $this->gameFolder . $gameFileName;
 			}
 		}
 				
@@ -51,13 +54,13 @@ class GameManager	{
 			$gameID = str_pad($gameNum, 10, "0", STR_PAD_LEFT);
 		}
 		while (! $this->isGameIDAvailable($gameID));
-		
+		$gameFileName = $this->gameFolder .$gameID . "." . self::$WAIT_EXT;
 		## NEED something to check to make sure file was created properly (dir permissions)
-		$gfFP = fopen($this->gameFolder . $gameID . "." . self::$WAIT_EXT, "w");
+		$gfFP = fopen($gameFileName, "w");
 		
 		fwrite($gfFP, $creator . "\n");
 		fclose($gfFP);
-		$this->waitingGameList[] = $gameID;
+		$this->waitingGameList[$gameID] = $gameFileName;
 		return $gameID;
 	}
 	

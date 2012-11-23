@@ -7,7 +7,7 @@ and open the template in the editor.
 
 <CatanGame>
     <GameNumber>12345</GameNumber>
-    <Players>
+    <Players turn="playerID">
         <Player id="<id number>"> 
             <Points>0</Points>
             <Resources>

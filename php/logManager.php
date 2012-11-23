@@ -2,8 +2,8 @@
 
 class LogManager
 {	
-	private $onGoingGameFolder;
-	private $completedGameFolder;
+	private $onGoingGameFolder = "games/";
+	private $completedGameFolder = "logs/";
 	
 	private $onGoingGameLogs;
 	private $completedGameLogs;
@@ -61,14 +61,10 @@ class LogManager
 	}
 	
 	public function doesOngoingLogExist($gameID)
-	{
-		return array_key_exists($gameID, $this->onGoingGameLogs);
-	}
+	{	return array_key_exists($gameID, $this->onGoingGameLogs);	}
 	
 	public function doesCompletedLogExist($gameID)
-	{
-		return array_key_exists($gameID, $this->completedGameLogs);
-	}
+	{	return array_key_exists($gameID, $this->completedGameLogs);	}
 	
 	public function getOngoingLogFile($gameID)
 	{
@@ -101,8 +97,6 @@ class LogManager
 		}
 		else
 			return "";
-		
-		
 	}
 
 }

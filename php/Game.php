@@ -173,10 +173,19 @@
 		
 		private function checkWinningConditions()
 		{
+			$gameOver = false;
+			$winner = "";
 			if ($this->player1->getVictoryPoints() == self::$POINTS_TO_WIN)
-				throw new GameOverException($this->player1->getPlayerID());
+				$winner = $this->player1->getPlayerID();
 			if ($this->player2->getVictoryPoints() == self::$POINTS_TO_WIN)
-				throw new GameOverException($this->player2->getPlayerID());
+				$winner = $this->player2->getPlayerID();
+			
+			if (! $gameOver)
+				return false;
+			
+			$logManager = new LogManager();
+			$logManager->closeOngoingLog($this->gameID);
+			throw new GameOverException($winner); 
 		}
 		
 		private function getPlayerToken($playerID)
@@ -188,18 +197,13 @@
 		}
 		
 		public function getPlayersTurn()
-		{
-			return $this->playerTurn;
-		}
+		{	return $this->playerTurn;	}
 		
 		public function isPlayersTurn($playerID)
-		{
-			return ($this->playerTurn == $playerID);
-		}
+		{	return ($this->playerTurn == $playerID);	}
 		
 		public function endPlayersTurn()
-		{
-			
+		{	
 			foreach(array_keys($this->playersByID) as $playerID)
 				if ($this->playerTurn != $playerID)
 				{
@@ -284,14 +288,10 @@
 			parent::__construct($message, $code, $previous);
 		}
 		public function getErrorMessage()
-		{
-			return "The game is now over. Player " . $this->getMessage() . " has won.";
-		}
+		{	return "The game is now over. Player " . $this->getMessage() . " has won.";	}
 		
 		public function getWinningPlayerID()
-		{
-			return $this->winningPlayer;
-		}
+		{	return $this->winningPlayer;	}
 	}
  
 ?>

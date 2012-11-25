@@ -179,6 +179,16 @@
 			$this->createGameXML();
 		}
 		
+		public function endInitialPlacement()
+		{
+			if ($this->gameState == "Initial")
+			{
+				$this->gameState == "Ongoing";
+				return true;						
+			}
+			return false;
+		}
+		
 		private function checkWinningConditions()
 		{
 			$gameOver = false;

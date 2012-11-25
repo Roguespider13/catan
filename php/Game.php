@@ -24,6 +24,7 @@
         
         // Board layout for the game
 		/* @var $boardLayout BoardLayout */
+		private $gameState;
         private $boardLayout;
 		
 		private $playersByID;
@@ -67,6 +68,7 @@
             $this->player2 = new Player($player2);
 			$this->playersByID[$creatorName] = $this->player1;
 			$this->playersByID[$player2] = $this->player2;
+			$this->gameState = "Initial";
             $this->boardLayout = new BoardLayout();
 			$this->boardLayout->createLayout();
 			
@@ -98,6 +100,11 @@
 			$rootNode = $xmlDoc->createElement("CatanGame");
 			$xmlDoc->appendChild($rootNode);
 			
+			$gameStateXML = $xmlDoc->createElement("GameState");
+			$gameStateText = $xmlDoc->createTextNode($this->gameState);
+			$gameStateXML->appendChild($gameStateText);
+			$rootNode->appendChild($gameStateXML);
+			
 			$gameNumXML = $xmlDoc->createElement("GameNumber");
 			$gameNumText = $xmlDoc->createTextNode($this->gameID);
 			$gameNumXML->appendChild($gameNumText);
@@ -125,6 +132,7 @@
 			if (count($playersXML) != 2)
 				throw new Exception("Bad Game XML.");
 			
+			$this->gameState = $gameXML->GameState;
 			$this->playerTurn = $playersXML->attributes()->turn;
 			$this->player1 = Player($playersXML[0]->attributes()->id);
 			$this->player1->reconstruct($playersXML[0]);
@@ -182,9 +190,10 @@
 			
 			if (! $gameOver)
 				return false;
-			
+			$this->gameState = "Completed";
 			$logManager = new LogManager();
 			$logManager->closeOngoingLog($this->gameID);
+			$this->createGameXML();
 			throw new GameOverException($winner); 
 		}
 		
@@ -242,11 +251,14 @@
 			if ( !$playerToken->canBuildSettlement() )
 				throw new Exception("Do not have the resources to build.");
 			
-			if (!$this->boardLayout->canBuildSettlement($playerID, $x, $y, $buildPosition))
+			$initialPlacement = false;
+			if ($this->gameState == "Initial")
+				$initialPlacement = true;
+			if (!$this->boardLayout->canBuildSettlement($playerID, $x, $y, $buildPosition, $initialPlacement))
 				throw new Exception("Can not build there.");
 			
 			$playerToken->buildSettlement();
-			$this->boardLayout->buildSettlement($playerID, $x, $y, $buildPosition);
+			$this->boardLayout->buildSettlement($playerID, $x, $y, $buildPosition, $initialPlacement);
 			$this->writeToLog("Player " . $playerID . " has built a settlement on tile (" . $x . "," . $y . "), position: " . $buildPosition);
 			$this->createGameXML();
 			$this->checkWinningConditions();

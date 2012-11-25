@@ -488,7 +488,7 @@ class BoardLayout	{
 	 * 2. No other settlements 1 road length away (even if road doesn't exist).
 	 * This requires a lot of checking
 	 */
-	public function canBuildSettlement($playerID, $x, $y, $position)
+	public function canBuildSettlement($playerID, $x, $y, $position, $initialPlacement)
 	{
 		if (!$this->insideBoardBoundaries($x, $y))
 			throw new Exception("Outside board boundaries.");
@@ -572,18 +572,19 @@ class BoardLayout	{
 		if ($settlePoint != "")
 			return false;
 		
-		if (! in_array($playerID, $adjRoads))
+		// Return false if there are now adjacent roads, though this isn't a requirement if its the initial placement of settlements
+		if ((! in_array($playerID, $adjRoads)) && ! $initialPlacement)
 			return false;
 		
-		if (!empty($adjOccupations))
+		if (! empty($adjOccupations))
 			return false;
 		
 		return true;
 	}
 	
-	public function buildSettlement($playerID, $x, $y, $position)
+	public function buildSettlement($playerID, $x, $y, $position, $initialPlacement=false)
 	{
-		if (! $this->canBuildSettlement)
+		if (! $this->canBuildSettlement($playerID, $x, $y, $position, $initialPlacement))
 			throw new Exception("Cannot build there.");
 		
 		$tile = $this->boardLayout[$x][$y];

@@ -189,6 +189,9 @@
 			return false;
 		}
 		
+		public function getGameState()
+		{	return $this->gameState;	}
+		
 		private function checkWinningConditions()
 		{
 			$gameOver = false;

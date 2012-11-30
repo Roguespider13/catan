@@ -53,7 +53,7 @@ class LogManager
 		
 		$logFileName = $this->onGoingGameFolder . $gameID . ".log";
 		$logHandle = fopen($logFileName, "w");
-		fwrite($logHandle, "LOG STARTED FOR GAME: " . $gameID);
+		fwrite($logHandle, "LOG STARTED FOR GAME: " . $gameID . "\n");
 		fclose($logHandle);
 		$this->onGoingGameLogs[$gameID] = $logFileName;
 		

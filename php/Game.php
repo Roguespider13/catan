@@ -76,7 +76,7 @@
 			$this->createGameXML($gameXML);
 			$logManager = new LogManager();
 			$this->gameLogFile = $logManager->createGameLogFile($gameID);
-			$this->writeToLog("Game has started.\Player 1: " . $creatorName . "\nPlayer 2: " . $player2);
+			$this->writeToLog("Game has started.\nPlayer 1: " . $creatorName . "\nPlayer 2: " . $player2);
 			
         }
 		
@@ -86,7 +86,7 @@
 			if ($this->gameLogFile == "")
 				throw new Exception("Log File not found. Unable to write to log.");
 			
-			$logHandle = fopen($this->gameID, "a");
+			$logHandle = fopen($this->gameLogFile, "a");
 			fwrite($logHandle, $string . "\n");
 			fclose($logHandle);
 		}

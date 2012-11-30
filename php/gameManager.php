@@ -64,14 +64,14 @@ class GameManager	{
 		return $gameID;
 	}
 	
-	public function joinGame($gameID, $challenger)	{
+	public function createGame($gameID, $challenger)	{
 		$waitFile = $this->getGameWaitFile($gameID);
 		if ($waitFile == "")
 		{
 			throw new Exception("Game ID doesn't exist");
 		}
 		$fileContent = file($waitFile);
-		$creator = $fileContent[0];
+		$creator = trim($fileContent[0]);
 		if ($creator == $challenger)
 			throw new Exception("Creator: " . $creator . " -- Challenger: " . $challenger . ". ====> User cannout play themselves.");
 		
@@ -81,10 +81,24 @@ class GameManager	{
 			unset($this->waitingGameList[$key]);
 		}
 		
-		$this->currentGameList[$gameID] = $this->gameFolder . $gameID . "." . self::$GAME_EXT;
-		$game = Game::createGame($gameID, $creator, $challenger);
+		$gameXML = $this->gameFolder . $gameID . "." . self::$GAME_EXT;
+		$this->currentGameList[$gameID] = $gameXML;
+		$game = new Game();
+		$game->createGame($gameID, $creator, $challenger, $gameXML);
 		
 		return $game;
+	}
+	
+	public function joinGame($gameID)
+	{
+		if (! $this->isGame($gameID))
+			throw new Exception("Invalid Game ID to Join.");
+		
+		$game = new Game();
+		$game->resumeGame($gameID);
+		
+		return $game;
+			
 	}
 	
 	public function getGameXML($gameID)

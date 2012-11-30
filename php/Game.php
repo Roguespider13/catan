@@ -45,7 +45,7 @@
 			return $this->gameID;
 		}
         
-        public function createGame($gameID, $creatorName, $player2) {
+        public function createGame($gameID, $creatorName, $player2, $gameXML) {
             $this->validator = new InputValidator();
             if ($this->validator->ValidateUserName($creatorName) !== 1) {
                 //echo "invalid player name";
@@ -71,12 +71,13 @@
 			$this->gameState = "Initial";
             $this->boardLayout = new BoardLayout();
 			$this->boardLayout->createLayout();
+			$this->playerTurn = $creatorName;
 			
-			$this->createGameXML();
+			$this->createGameXML($gameXML);
 			$logManager = new LogManager();
 			$this->gameLogFile = $logManager->createGameLogFile($gameID);
 			$this->writeToLog("Game has started.\Player 1: " . $creatorName . "\nPlayer 2: " . $player2);
-			$this->playerTurn = $creatorName;
+			
         }
 		
 		// Line endings are automatically added to the passed string. 
@@ -91,12 +92,19 @@
 		}
 		
 
-		private function createGameXML()
+		private function createGameXML($xmlFileName="")
 		{
-			$gameManager = new GameManager();
-			$xmlFileName = $gameManager->getGameXML($this->gameID);
+			if ($xmlFileName == "")
+			{
+				$gameManager = new GameManager();
+				$xmlFileName = $gameManager->getGameXML($this->gameID);
+			}
 			
 			$xmlDoc = new DOMDocument('1.0');
+			//Pretty Print
+			$xmlDoc->preserveWhiteSpace = false;
+			$xmlDoc->formatOutput = true;
+			
 			$rootNode = $xmlDoc->createElement("CatanGame");
 			$xmlDoc->appendChild($rootNode);
 			
@@ -123,7 +131,9 @@
 		
 		public function resumeGame($gameID)
 		{
-			$xmlFileName = GameManager::getGameXML($this->gameID);
+			$gameManager = new GameManager();
+			
+			$xmlFileName = $gameManager->getGameXML($this->gameID);
 			$gameXML = simplexml_load_file($xmlFileName);
 			if ($gameXML->GameNumber != $this->gameID)
 				throw new Exception("Bad Game XML.");

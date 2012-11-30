@@ -162,27 +162,27 @@ class Player {
 		$resXML = $xmlDoc->createElement("Resources");
 		$playerXML->appendChild($resXML);
 		
-		$brickXML = $xmlDoc->createAttribute("Brick");
+		$brickXML = $xmlDoc->createElement("Brick");
 		$brickText = $xmlDoc->createTextNode($this->brickCards);
 		$brickXML->appendChild($brickText);
 		$resXML->appendChild($brickXML);
 		
-		$lumberXML = $xmlDoc->createAttribute("Lumber");
+		$lumberXML = $xmlDoc->createElement("Lumber");
 		$lumberText = $xmlDoc->createTextNode($this->lumberCards);
 		$lumberXML->appendChild($lumberText);
 		$resXML->appendChild($lumberXML);
 		
-		$oreXML = $xmlDoc->createAttribute("Ore");
+		$oreXML = $xmlDoc->createElement("Ore");
 		$oreText = $xmlDoc->createTextNode($this->oreCards);
 		$oreXML->appendChild($oreText);
 		$resXML->appendChild($oreXML);
 		
-		$wheatXML = $xmlDoc->createAttribute("Wheat");
+		$wheatXML = $xmlDoc->createElement("Wheat");
 		$wheatText = $xmlDoc->createTextNode($this->wheatCards);
 		$wheatXML->appendChild($wheatText);
 		$resXML->appendChild($wheatXML);
 		
-		$woolXML = $xmlDoc->createAttribute("Wool");
+		$woolXML = $xmlDoc->createElement("Wool");
 		$woolText = $xmlDoc->createTextNode($this->woolCards);
 		$woolXML->appendChild($woolText);
 		$resXML->appendChild($woolXML);

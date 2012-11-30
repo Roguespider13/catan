@@ -266,7 +266,8 @@ class BoardLayout	{
 		{
 			$index = rand(0, count($extraDie)-1);
 			$dieArray[] = $extraDie[$index];
-			unset($extraDie[$index]);			
+			unset($extraDie[$index]);
+			$extraDie = array_values($extraDie);
 		}
 		
 		for ($i=0; $i < 3; $i++)
@@ -383,7 +384,7 @@ class BoardLayout	{
 
 				$tile->setResourceType($resType);
 				$tile->setRollNumber($rollNumber);
-				$this->boardArray[$row][$column] = $tile;
+				$this->boardLayout[$row][$column] = $tile;
 				
 				$this->tilesByDieNumber[$rollNumber][] = $tile;
 			}

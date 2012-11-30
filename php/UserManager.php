@@ -60,8 +60,8 @@ class UserManager
 	*/	
 	private function getUserElement($userName, $position)
 	{
-		$fileContents = fopen($this->getUserFileName($userName));
-		$userContents = $fileContents[0];
+		$fileContents = file($this->getUserFileName($userName));
+		$userContents = trim($fileContents[0]);
 		$elements = explode(":", $userContents);
 		
 		return $elements[$position];
@@ -81,8 +81,8 @@ class UserManager
 	
 	public function addUserWin($userName)
 	{
-		$fileContents = fopen($this->getUserFileName($userName));
-		$userContents = explode(":", $fileContents[0]);
+		$fileContents = file($this->getUserFileName($userName));
+		$userContents = explode(":", trim($fileContents[0]));
 		$wins = intval($userContents[3]);
 		$userContents[3] = strval($wins + 1);
 		
@@ -92,8 +92,8 @@ class UserManager
 	
 	public function addUserLoss($userName)
 	{
-		$fileContents = fopen($this->userFolder . $userName . ".usr");
-		$userContents = explode(":", $fileContents[0]);
+		$fileContents = file($this->userFolder . $userName . ".usr");
+		$userContents = explode(":", trim($fileContents[0]));
 		$losses = intval($userContents[4]);
 		$userContents[3] = strval($losses + 1);
 		

@@ -12,7 +12,7 @@ and open the template in the editor.
 		Ongoing - Normal game rules apply
 		Complete - Game Over
 	-->
-	<GameState>Initial</GameState>
+	<GameState>Initial-0-Settlement</GameState>
     <GameNumber>12345</GameNumber>
     <Players turn="playerID">
         <Player id="<id number>"> 

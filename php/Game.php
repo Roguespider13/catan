@@ -9,6 +9,7 @@
 		// Name of the game creator as entered when creating the game
 
 		private static $POINTS_TO_WIN = 8;
+		private static $INITIAL_STATE_TAG = "Initial";
 		private $creatorName;
 
 		// Name of the game
@@ -34,6 +35,9 @@
 		private $gameLogFile;
 
 		private $playerTurn;
+		
+		private $initialTurn;
+		private $initialCount;
 		
 		public function __construct()
 		{
@@ -65,7 +69,7 @@
 			$this->player2 = new Player($player2);
 			$this->playersByID[$creatorName] = $this->player1;
 			$this->playersByID[$player2] = $this->player2;
-			$this->gameState = "Initial";
+			$this->gameState = "Initial-0-Settlement";
 			$this->boardLayout = new BoardLayout();
 			$this->boardLayout->createLayout();
 			$this->playerTurn = $creatorName;
@@ -106,7 +110,7 @@
 			$xmlDoc->appendChild($rootNode);
 			
 			$gameStateXML = $xmlDoc->createElement("GameState");
-			$gameStateText = $xmlDoc->createTextNode($this->gameState);
+			$gameStateText = $xmlDoc->createTextNode($this->gameState . "-" . $this->initialCount . "-" . $this->initialTurn);
 			$gameStateXML->appendChild($gameStateText);
 			$rootNode->appendChild($gameStateXML);
 			
@@ -140,7 +144,14 @@
 			if (count($playerNodes) != 2)
 				throw new Exception("Bad Game XML.");
 			
-			$this->gameState = (string) $gameXML->GameState;
+			$stateArr = explode("-", (string) $gameXML->GameState);
+			$this->gameState = $stateArr[0];
+			if (array_key_exists(1, $stateArr) && self::$INITIAL_STATE_TAG)
+				$this->initialCount = $stateArr[1];
+			if (array_key_exists(2, $stateArr) && self::$INITIAL_STATE_TAG)
+				$this->initialTurn = $stateArr[2];
+				
+			
 			$this->playerTurn = (string) $playersXML->attributes()->turn;
 			$this->player1 = new Player((string) $playerNodes[0]->attributes()->id);
 			$this->player1->reconstruct($playerNodes[0]);
@@ -207,6 +218,9 @@
 		
 		public function getGameState()
 		{	return $this->gameState;	}
+		
+		public function getInitialTurn()
+		{	return $this->initialTurn;	}
 		
 		public function getPlayer($playerID)
 		{
@@ -280,6 +294,15 @@
 			$this->boardLayout->buildRoad($playerID, $x, $y, $buildPosition);
 			
 			$this->writeToLog("Player " . $playerID . " has built a road on tile (" . $x . "," . $y . "), position: " . $buildPosition);
+			
+			if ($this->gameState == self::$INITIAL_STATE_TAG)
+			{
+				$this->initialTurn = "Settlement";
+				$this->endPlayersTurn();
+				$this->initialCount++;
+				if ($this->initialCount >= count($this->playersByID))
+					$this->endInitialPlacement();
+			}
 			$this->createGameXML();
 		}
 		
@@ -304,6 +327,10 @@
 			$playerToken->buildSettlement();
 			$this->boardLayout->buildSettlement($playerID, $x, $y, $buildPosition, $initialPlacement);
 			$this->writeToLog("Player " . $playerID . " has built a settlement on tile (" . $x . "," . $y . "), position: " . $buildPosition);
+			
+			if ($initialPlacement)
+				$this->initialTurn = "Road";
+			
 			$this->createGameXML();
 			$this->checkWinningConditions();
 		}

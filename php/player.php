@@ -7,11 +7,11 @@ class Player {
 	private $id;
 	
 	// Players start with these initial resources so they can build their initial settlements/roads.
-	private $brickCards = 4;
-	private $lumberCards = 4;
+	private $brickCards = 2;
+	private $lumberCards = 2;
 	private $oreCards = 0;
-	private $wheatCards = 2;
-	private $woolCards = 2;
+	private $wheatCards = 1;
+	private $woolCards = 1;
 	
 	private $victoryPoints = 0;
 

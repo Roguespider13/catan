@@ -316,7 +316,7 @@
 				throw new Exception("Do not have the resources to build.");
 			
 			if (!$this->boardLayout->canBuildRoad($playerID, $x, $y, $buildPosition))
-				throw new Exception("Can not build there.");
+				throw new Exception("Can't not build there.");
 			
 			$playerToken->buildRoad();
 			$this->boardLayout->buildRoad($playerID, $x, $y, $buildPosition);
@@ -350,7 +350,7 @@
 				$initialPlacement = true;
 
 			if (!$this->boardLayout->canBuildSettlement($playerID, $x, $y, $buildPosition, $initialPlacement))
-				throw new Exception("Can not build there.");
+				throw new Exception("Can't build there.");
 			
 			$playerToken->buildSettlement();
 			$this->boardLayout->buildSettlement($playerID, $x, $y, $buildPosition, $initialPlacement);
@@ -375,7 +375,7 @@
 				throw new Exception("Do not have the resources to build.");
 			
 			if (!$this->boardLayout->canBuildCity($playerID, $x, $y, $buildPosition))
-				throw new Exception("Can not build there.");
+				throw new Exception("Can't build there.");
 			
 			$playerToken->buildCity();
 			$this->boardLayout->buildCity($playerID, $x, $y, $buildPosition);	

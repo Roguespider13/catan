@@ -33,22 +33,22 @@
 	<GameBoard>
 		<Robber Row="0" Col="0"/>
 		<Tiles>
-			<Tile Row="0" Col="0" ResourceType="desert" DieNumber="10" TR="" LR="" RR="" BR="" TLC="" TRC="" BLC="" BRC=""/>
-			<Tile Row="0" Col="1" ResourceType="desert" DieNumber="10" TR="" LR="" RR="" BR="" TLC="" TRC="" BLC="" BRC=""/>
-			<Tile Row="0" Col="1" ResourceType="desert" DieNumber="10" TR="" LR="" RR="" BR="" TLC="" TRC="" BLC="" BRC=""/>
-			<Tile Row="0" Col="3" ResourceType="desert" DieNumber="11" TR="" LR="" RR="" BR="" TLC="" TRC="" BLC="" BRC=""/>
-			<Tile Row="1" Col="0" ResourceType="desert" DieNumber="11" TR="" LR="" RR="" BR="" TLC="" TRC="" BLC="" BRC=""/>
-			<Tile Row="1" Col="1" ResourceType="desert" DieNumber="11" TR="" LR="" RR="" BR="" TLC="" TRC="" BLC="" BRC=""/>
-			<Tile Row="1" Col="2" ResourceType="desert" DieNumber="11" TR="" LR="" RR="" BR="" TLC="" TRC="" BLC="" BRC=""/>
-			<Tile Row="1" Col="3" ResourceType="desert" DieNumber="11" TR="" LR="" RR="" BR="" TLC="" TRC="" BLC="" BRC=""/>
-			<Tile Row="2" Col="0" ResourceType="desert" DieNumber="11" TR="" LR="" RR="" BR="" TLC="" TRC="" BLC="" BRC=""/>
-			<Tile Row="2" Col="1" ResourceType="desert" DieNumber="11" TR="" LR="" RR="" BR="" TLC="" TRC="" BLC="" BRC=""/>
-			<Tile Row="2" Col="2" ResourceType="desert" DieNumber="11" TR="" LR="" RR="" BR="" TLC="" TRC="" BLC="" BRC=""/>
-			<Tile Row="2" Col="3" ResourceType="desert" DieNumber="11" TR="" LR="" RR="" BR="" TLC="" TRC="" BLC="" BRC=""/>
-			<Tile Row="3" Col="0" ResourceType="desert" DieNumber="11" TR="" LR="" RR="" BR="" TLC="" TRC="" BLC="" BRC=""/>
-			<Tile Row="3" Col="1" ResourceType="desert" DieNumber="11" TR="" LR="" RR="" BR="" TLC="" TRC="" BLC="" BRC=""/>
-			<Tile Row="3" Col="2" ResourceType="desert" DieNumber="11" TR="" LR="" RR="" BR="" TLC="" TRC="" BLC="" BRC=""/>
-			<Tile Row="3" Col="3" ResourceType="desert" DieNumber="11" TR="" LR="" RR="" BR="" TLC="" TRC="" BLC="" BRC=""/>
+			<Tile Row="0" Col="0" ResType="desert" DieNumber="10" TR="" LR="" RR="" BR="" TLC="" TRC="" BLC="" BRC=""/>
+			<Tile Row="0" Col="1" ResType="desert" DieNumber="10" TR="" LR="" RR="" BR="" TLC="" TRC="" BLC="" BRC=""/>
+			<Tile Row="0" Col="1" ResType="desert" DieNumber="10" TR="" LR="" RR="" BR="" TLC="" TRC="" BLC="" BRC=""/>
+			<Tile Row="0" Col="3" ResType="desert" DieNumber="11" TR="" LR="" RR="" BR="" TLC="" TRC="" BLC="" BRC=""/>
+			<Tile Row="1" Col="0" ResType="desert" DieNumber="11" TR="" LR="" RR="" BR="" TLC="" TRC="" BLC="" BRC=""/>
+			<Tile Row="1" Col="1" ResType="desert" DieNumber="11" TR="" LR="" RR="" BR="" TLC="" TRC="" BLC="" BRC=""/>
+			<Tile Row="1" Col="2" ResType="desert" DieNumber="11" TR="" LR="" RR="" BR="" TLC="" TRC="" BLC="" BRC=""/>
+			<Tile Row="1" Col="3" ResType="desert" DieNumber="11" TR="" LR="" RR="" BR="" TLC="" TRC="" BLC="" BRC=""/>
+			<Tile Row="2" Col="0" ResType="desert" DieNumber="11" TR="" LR="" RR="" BR="" TLC="" TRC="" BLC="" BRC=""/>
+			<Tile Row="2" Col="1" ResType="desert" DieNumber="11" TR="" LR="" RR="" BR="" TLC="" TRC="" BLC="" BRC=""/>
+			<Tile Row="2" Col="2" ResType="desert" DieNumber="11" TR="" LR="" RR="" BR="" TLC="" TRC="" BLC="" BRC=""/>
+			<Tile Row="2" Col="3" ResType="desert" DieNumber="11" TR="" LR="" RR="" BR="" TLC="" TRC="" BLC="" BRC=""/>
+			<Tile Row="3" Col="0" ResType="desert" DieNumber="11" TR="" LR="" RR="" BR="" TLC="" TRC="" BLC="" BRC=""/>
+			<Tile Row="3" Col="1" ResType="desert" DieNumber="11" TR="" LR="" RR="" BR="" TLC="" TRC="" BLC="" BRC=""/>
+			<Tile Row="3" Col="2" ResType="desert" DieNumber="11" TR="" LR="" RR="" BR="" TLC="" TRC="" BLC="" BRC=""/>
+			<Tile Row="3" Col="3" ResType="desert" DieNumber="11" TR="" LR="" RR="" BR="" TLC="" TRC="" BLC="" BRC=""/>
 		</Tiles>
 	</GameBoard>
 </CatanGame>

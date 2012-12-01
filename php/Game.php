@@ -10,6 +10,7 @@
 
 		private static $POINTS_TO_WIN = 8;
 		private static $INITIAL_STATE_TAG = "Initial";
+		private static $GAME_SCHEMA_FILE = "./gameXML.xsd";
 		private $creatorName;
 
 		// Name of the game
@@ -69,7 +70,9 @@
 			$this->player2 = new Player($player2);
 			$this->playersByID[$creatorName] = $this->player1;
 			$this->playersByID[$player2] = $this->player2;
-			$this->gameState = "Initial-0-Settlement";
+			$this->gameState = "Initial";
+			$this->initialCount=0;
+			$this->initialTurn="Settlement";
 			$this->boardLayout = new BoardLayout();
 			$this->boardLayout->createLayout();
 			$this->playerTurn = $creatorName;
@@ -109,6 +112,10 @@
 			$rootNode = $xmlDoc->createElement("CatanGame");
 			$xmlDoc->appendChild($rootNode);
 			
+			$rootNode->setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+			$rootNode->setAttribute("xsi:noNamespaceSchemaLocation", "file://" . self::$GAME_SCHEMA_FILE);
+			
+			
 			$gameStateXML = $xmlDoc->createElement("GameState");
 			$gameStateText = $xmlDoc->createTextNode($this->gameState . "-" . $this->initialCount . "-" . $this->initialTurn);
 			$gameStateXML->appendChild($gameStateText);
@@ -128,6 +135,14 @@
 			$rootNode->appendChild($this->boardLayout->getBoardLayoutXML($xmlDoc, "GameBoard"));
 			
 			$xmlDoc->save($xmlFileName);
+			$this->validateGameXML($xmlFileName);
+		}
+		
+		private function validateGameXML($xmlFileName)
+		{
+			$tempDOM = new DOMDocument();
+			$tempDOM->load($xmlFileName);
+			return $tempDOM->schemaValidate(self::$GAME_SCHEMA_FILE);
 		}
 		
 		public function resumeGame($gameID)
@@ -136,9 +151,14 @@
 			$gameManager = new GameManager();
 			
 			$xmlFileName = $gameManager->getGameXML($this->gameID);
+			
+			if (!$this->validateGameXML($xmlFileName))
+				throw new Exception("Bad Game XML");
+			
 			$gameXML = simplexml_load_file($xmlFileName);
 			if ((string) $gameXML->GameNumber != $this->gameID)
-				throw new Exception("Bad Game XML.");
+				throw new Exception("Game ID doesn't match.");
+			
 			$playersXML = $gameXML->Players;
 			$playerNodes = $playersXML->Player;
 			if (count($playerNodes) != 2)

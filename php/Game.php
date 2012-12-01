@@ -198,7 +198,8 @@
 		{
 			if ($this->gameState == "Initial")
 			{
-				$this->gameState == "Ongoing";
+				$this->gameState = "Ongoing";
+				$this->createGameXML();
 				return true;						
 			}
 			return false;

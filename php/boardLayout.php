@@ -679,7 +679,7 @@ class BoardLayout	{
 				if ($upperTile) // Upper
 					$adjRoads[] = $upperTile->getRoad("left");
 				$adjRoads[] = $tile->getPlayerOccupation("topLeft");
-				$adjRoads[] = $tile->getPlayerOccupation("topRight");
+				$adjRoads[] = $tile->getPlayerOccupation("bottomLeft");
 				break;
 			case "right":
 				if ($tile->getRoad("right") != "")
@@ -688,6 +688,7 @@ class BoardLayout	{
 				$adjRoads[] = $tile->getRoad("bottom");
 				if ($upperTile) //Upper
 					$adjRoads[] = $upperTile->getRoad("right");
+				
 				if ($rightTile) //Right
 				{
 					$adjRoads[] = $rightTile->getRoad("top");
@@ -718,6 +719,7 @@ class BoardLayout	{
 				break;
 		}
 
+		//print_r($adjRoads);
 		if (in_array($playerID, $adjRoads))
 			return true;
 		

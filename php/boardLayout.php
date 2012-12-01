@@ -197,6 +197,10 @@ class BoardTile	{
 		return $resArray;
 	}
 	
+	/*
+	 * Occupation - [S/C].<playerID> indicates settlement or city owned by players
+	 * resArray -> array with number of resources for players. Key -> Player, Value -> number of resource cards.
+	 */
 	private function updateResources($occupation, $resArray)
 	{
 		
@@ -209,10 +213,12 @@ class BoardTile	{
 			if ($occ[0] == "C")
 				$resNum = 2;
 			
+			// If player is already in resArray add to current value.
 			if (array_key_exists($occ[1], $resArray))
 				$resArray[$occ[1]] = $resArray[$occ[1]] + $resNum;
+			// Else add player and set to current value.
 			else
-				$resArray[$occ + 1] = $resNum;
+				$resArray[$occ [1]] = $resNum;
 		}
 		
 		return $resArray;
@@ -472,7 +478,7 @@ class BoardLayout	{
 					$this->updateBuildingTile($playerID, $this->boardLayout[$x][$y-1], "bottomRight", $type);
 					//$this->boardLayout[$x][$y-1]->buildCity($playerID, "bottomRight");
 				if ($x < 3 && $y > 0)
-					$this->updateBuildingTile($playerID, $this->boardLayout[$x+1][$y+1], "topRight", $type);
+					$this->updateBuildingTile($playerID, $this->boardLayout[$x+1][$y-1], "topRight", $type);
 					//$this->boardLayout[$x+1][$y+1]->buildCity($playerID, "topRight");
 				break;
 		}
@@ -529,7 +535,7 @@ class BoardLayout	{
 
 		if ($adjTile1 && $adjTile1->getOccupation($position))
 			$adjOccupations[] = $adjTile1->getOccupation($position);
-		if ($adjTile2 && $adjTile1->getOccupation($position))
+		if ($adjTile2 && $adjTile2->getOccupation($position))
 			$adjOccupations[] = $adjTile2->getOccupation($position);
 		
 		switch ($position)

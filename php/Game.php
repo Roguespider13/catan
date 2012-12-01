@@ -136,19 +136,19 @@
 			
 			$xmlFileName = $gameManager->getGameXML($this->gameID);
 			$gameXML = simplexml_load_file($xmlFileName);
-			if ($gameXML->GameNumber != $this->gameID)
+			if ((string) $gameXML->GameNumber != $this->gameID)
 				throw new Exception("Bad Game XML.");
 			$playersXML = $gameXML->Players;
 			$playerNodes = $playersXML->Player;
 			if (count($playerNodes) != 2)
 				throw new Exception("Bad Game XML.");
 			
-			$this->gameState = $gameXML->GameState;
-			$this->playerTurn = $playersXML->attributes()->turn;
-			$this->player1 = new Player($playerNodes[0]->attributes()->id);
+			$this->gameState = (string) $gameXML->GameState;
+			$this->playerTurn = (string) $playersXML->attributes()->turn;
+			$this->player1 = new Player((string) $playerNodes[0]->attributes()->id);
 			$this->player1->reconstruct($playerNodes[0]);
 			
-			$this->player2 = new Player($playerNodes[1]->attributes()->id);
+			$this->player2 = new Player((string) $playerNodes[1]->attributes()->id);
 			$this->player2->reconstruct($playerNodes[1]);
 			
 			// Consider removing Player1, Player2 variables and just using array
@@ -268,6 +268,9 @@
 		// Need to check if possible to build before building (since it cost resources.
 		public function buildRoad($playerID, $x, $y, $buildPosition)
 		{
+			if (!$this->isPlayersTurn($playerID))
+				throw new Exception("Not Your Turn.");
+			
 			$playerToken = $this->getPlayer($playerID);
 			if ( !$playerToken->canBuildRoad() )
 				throw new Exception("Do not have the resources to build.");
@@ -286,6 +289,9 @@
 		// Need to check if possible to build before building (since it cost resources.
 		public function buildSettlement($playerID, $x, $y, $buildPosition)
 		{
+			if (!$this->isPlayersTurn($playerID))
+				throw new Exception("Not Your Turn.");
+			
 			$playerToken = $this->getPlayer($playerID);
 			if ( !$playerToken->canBuildSettlement() )
 				throw new Exception("Do not have the resources to build.");
@@ -308,6 +314,9 @@
 		// Need to check if possible to build before building (since it cost resources.
 		public function buildCity($playerID, $x, $y, $buildPosition)
 		{
+			if (!$this->isPlayersTurn($playerID))
+				throw new Exception("Not Your Turn.");
+			
 			$playerToken = $this->getPlayer($playerID);
 			if ( !$playerToken->canBuildCity() )
 				throw new Exception("Do not have the resources to build.");
@@ -325,7 +334,7 @@
 		
 		public function isPlayer($playerID)
 		{
-			return in_array($playerID, $this->playersByID);
+			return array_key_exists($playerID, $this->playersByID);
 		}
 
     }

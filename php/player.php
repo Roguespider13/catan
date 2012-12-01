@@ -21,13 +21,13 @@ class Player {
 	
 	public function reconstruct($playerXML)
 	{
-		$this->victoryPoints = $playerXML->Points;
+		$this->victoryPoints = intval($playerXML->Points);
 		$resNode = $playerXML->Resources;
-		$this->brickCards = $resNode->Brick;
-		$this->lumberCards = $resNode->Lumber;
-		$this->oreCards = $resNode->Ore;
-		$this->wheatCards = $resNode->Wheat;
-		$this->woolCards = $resNode->Wool;		
+		$this->brickCards = intval($resNode->Brick);
+		$this->lumberCards = intval($resNode->Lumber);
+		$this->oreCards = intval($resNode->Ore);
+		$this->wheatCards = intval($resNode->Wheat);
+		$this->woolCards = intval($resNode->Wool);		
 	}
 	
 	public function getPlayerID()

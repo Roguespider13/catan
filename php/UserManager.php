@@ -4,6 +4,7 @@ class UserManager
 {
 
 	private static $USER_EXT = "usr";
+	private static $SALT_N_ROUNDS = '$6$rounds=5000$';
 	
 	private $userFolder = "users/";
 	private $currentUserFiles;
@@ -21,7 +22,7 @@ class UserManager
 			$fileInfo = pathinfo($userFile);
 			$userID = $fileInfo["filename"];
 			$userFileName = $fileInfo["basename"];
-			$this->currentUserFiles[$userID] = $userFileName;
+			$this->currentUserFiles[$userID] = $this->userFolder . $userFileName;
 			
 		}
 	}
@@ -34,7 +35,7 @@ class UserManager
 		if ($this->doesUserExist($userName))
 			throw new Exception("User already exists");
 		
-		$usrHandle = fopen($this->userFolder . $userName . self::$USER_EXT);
+		$usrHandle = fopen($this->userFolder . $userName . "." . self::$USER_EXT, "w");
 		$salt = $this->generateSalt(16);
 		$secureHash = $this->generateSecureHash($password, $salt);
 		// Username:SALT:hash:Wins:Loses
@@ -47,7 +48,7 @@ class UserManager
 		if (! $this->doesUserExist($username))
 			return false;
 		
-		return ($this->generateSecureHash($password, "$6$rounds=5000$" . $this->getSalt($userName) . "$" == $this->getSecureHash($userName)));
+		return ($this->generateSecureHash($password, $this->getSalt($username)) == $this->getSecureHash($username));
 		
 	}
 	
@@ -117,7 +118,7 @@ class UserManager
 	
 	private function generateSecureHash($password, $salt)
 	{
-		return crypt($password, "$6$rounds=5000$" . $salt . "$");
+		return crypt($password, self::$SALT_N_ROUNDS . $salt . '$');
 				
 	}
 	

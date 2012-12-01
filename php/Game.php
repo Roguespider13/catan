@@ -117,7 +117,11 @@
 			
 			
 			$gameStateXML = $xmlDoc->createElement("GameState");
-			$gameStateText = $xmlDoc->createTextNode($this->gameState . "-" . $this->initialCount . "-" . $this->initialTurn);
+			if ($this->gameState == self::$INITIAL_STATE_TAG)
+				$gameStateText = $xmlDoc->createTextNode($this->gameState . "-" . $this->initialCount . "-" . $this->initialTurn);
+			else
+				$gameStateText = $xmlDoc->createTextNode ($this->gameState);
+			
 			$gameStateXML->appendChild($gameStateText);
 			$rootNode->appendChild($gameStateXML);
 			
@@ -230,6 +234,8 @@
 			if ($this->gameState == "Initial")
 			{
 				$this->gameState = "Ongoing";
+				$this->initialCount = 0;
+				$this->initialTurn = "";
 				$this->createGameXML();
 				return true;						
 			}
@@ -252,14 +258,16 @@
 		
 		private function checkWinningConditions()
 		{
-			$gameOver = false;
 			$winner = "";
-			if ($this->player1->getVictoryPoints() == self::$POINTS_TO_WIN)
-				$winner = $this->player1->getPlayerID();
-			if ($this->player2->getVictoryPoints() == self::$POINTS_TO_WIN)
-				$winner = $this->player2->getPlayerID();
 			
-			if (! $gameOver)
+			foreach ($this->playersByID as $player)
+				if ($player->getVictoryPoints() >= self::$POINTS_TO_WIN)
+				{
+					$winner = $player->getPlayerID();
+					break;
+				}
+			
+			if (! $winner)
 				return false;
 			$this->gameState = "Completed";
 			$logManager = new LogManager();

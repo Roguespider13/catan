@@ -25,14 +25,13 @@
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
 						<xs:pattern value="([SC]\.[a-zA-z0-9]{5,20})?"/>
-						<xs:enumeration value=""/>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:attribute>
 			<xs:attribute name="TR" use="required">
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:enumeration value=""/>
+						<xs:pattern value="([a-zA-z0-9]{5,20})?"/>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:attribute>
@@ -40,7 +39,6 @@
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
 						<xs:pattern value="([SC]\.[a-zA-z0-9]{5,20})?"/>
-						<xs:enumeration value=""/>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:attribute>
@@ -51,7 +49,7 @@
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:attribute>
-			<xs:attribute name="ResourceType" use="required">
+			<xs:attribute name="ResType" use="required">
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
 						<xs:enumeration value="wheat"/>
@@ -66,14 +64,14 @@
 			<xs:attribute name="RR" use="required">
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:enumeration value=""/>
+						<xs:pattern value="([a-zA-z0-9]{5,20})?"/>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:attribute>
 			<xs:attribute name="LR" use="required">
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:enumeration value=""/>
+						<xs:pattern value="([a-zA-z0-9]{5,20})?"/>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:attribute>
@@ -95,14 +93,13 @@
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
 						<xs:pattern value="([SC]\.[a-zA-z0-9]{5,20})?"/>
-						<xs:enumeration value=""/>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:attribute>
 			<xs:attribute name="BR" use="required">
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:enumeration value=""/>
+						<xs:pattern value="([a-zA-z0-9]{5,20})?"/>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:attribute>
@@ -110,7 +107,6 @@
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
 						<xs:pattern value="([SC]\.[a-zA-z0-9]{5,20})?"/>
-						<xs:enumeration value=""/>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:attribute>
@@ -158,7 +154,7 @@
 			<xs:attribute name="turn" use="required">
 				<xs:simpleType>
 					<xs:restriction base="xs:string">
-						<xs:enumeration value="player1"/>
+						<xs:pattern value="([a-zA-z0-9]{5,20})?"/>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:attribute>

@@ -6,79 +6,76 @@
     
     // Each game has a creator, two participants, and a board layout
     class Game {
-        // Name of the game creator as entered when creating the game
-		
+		// Name of the game creator as entered when creating the game
+
 		private static $POINTS_TO_WIN = 8;
-        private $creatorName;
-        
-        // Name of the game
-        //private $gameName;
+		private $creatorName;
+
+		// Name of the game
+		//private $gameName;
 		// Leaving game name if we want to set a name
 		private $gameID;
-        
-        // Names of participants who join the game
+
+		// Names of participants who join the game
 		/* @var $player1 Player */
-        private $player1;
+		private $player1;
 		/* @var $player2 Player */
-        private $player2;
-        
-        // Board layout for the game
+		private $player2;
+
+		// Board layout for the game
 		/* @var $boardLayout BoardLayout */
 		private $gameState;
-        private $boardLayout;
-		
+		private $boardLayout;
+
 		private $playersByID;
-        
-        // InputValidator object
-        private $validator;
+
+		// InputValidator object
+		private $validator;
 		private $gameLogFile;
-		
+
 		private $playerTurn;
 		
 		public function __construct()
 		{
-			
+
 		}
-		
+
 		public function getGameID()
 		{
 			return $this->gameID;
 		}
         
-        public function createGame($gameID, $creatorName, $player2, $gameXML) {
-            $this->validator = new InputValidator();
-            if ($this->validator->ValidateUserName($creatorName) !== 1) {
-                //echo "invalid player name";
-                throw new Exception("Invalid player name.");
-            }
-			
-			if ($this->validator->ValidateUserName($player2) !== 1) {
-                //echo "invalid player name";
-                throw new Exception("Invalid player name.");
-            }
-            
-/*            if ($this->validator->ValidateName($gameName) !== 1) {
-                //echo "invalid game name";
-                throw new Exception("Invalid game name.");
-            }
- */          
-            //$this->creatorName = new Player($creatorName);
+		public function createGame($gameID, $creatorName, $player2, $gameXML) 
+		{
+			$this->validator = new InputValidator();
+			if ($this->validator->ValidateUserName($creatorName) !== 1) 
+			{
+				//echo "invalid player name";
+				throw new Exception("Invalid player name.");
+			}
+
+			if ($this->validator->ValidateUserName($player2) !== 1) 
+			{
+				//echo "invalid player name";
+				throw new Exception("Invalid player name.");
+			}
+
 			$this->gameID = $gameID;
-            $this->player1 = new Player($creatorName);
-            $this->player2 = new Player($player2);
+			$this->player1 = new Player($creatorName);
+			$this->player2 = new Player($player2);
 			$this->playersByID[$creatorName] = $this->player1;
 			$this->playersByID[$player2] = $this->player2;
 			$this->gameState = "Initial";
-            $this->boardLayout = new BoardLayout();
+			$this->boardLayout = new BoardLayout();
 			$this->boardLayout->createLayout();
 			$this->playerTurn = $creatorName;
-			
+
 			$this->createGameXML($gameXML);
 			$logManager = new LogManager();
 			$this->gameLogFile = $logManager->createGameLogFile($gameID);
 			$this->writeToLog("Game has started.\nPlayer 1: " . $creatorName . "\nPlayer 2: " . $player2);
-			
-        }
+
+		}
 		
 		// Line endings are automatically added to the passed string. 
 		private function writeToLog($string)

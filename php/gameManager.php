@@ -1,8 +1,9 @@
 <?php
 
-	require_once 'Game.php';
+require_once 'Game.php';
 
-class GameManager	{
+class GameManager	
+{
 	
 	private $currentGameList;
 	private $waitingGameList;
@@ -11,7 +12,8 @@ class GameManager	{
 	private static $WAIT_EXT = "wait";
 	private static $GAME_EXT = "xml";
 	
-	public function __construct() {
+	public function __construct() 
+	{
 		$this->currentGameList = array();
 		$this->waitingGameList = array();
 		
@@ -46,7 +48,8 @@ class GameManager	{
 	public function getOpenGames()
 	{	return array_keys($this->waitingGameList);	}
 	
-	public function createEmptyGame($creator)	{
+	public function createEmptyGame($creator)	
+	{
 		do
 		{
 			#Create random game number and then pad so all game numbers are a full 10 digits.
@@ -64,7 +67,8 @@ class GameManager	{
 		return $gameID;
 	}
 	
-	public function createGame($gameID, $challenger)	{
+	public function createGame($gameID, $challenger)
+	{
 		$waitFile = $this->getGameWaitFile($gameID);
 		if ($waitFile == "")
 		{
@@ -121,8 +125,6 @@ class GameManager	{
 	
 	public function isGame($gameID)
 	{	return array_key_exists($gameID, $this->currentGameList); }
-	
-	
 	
 }
 

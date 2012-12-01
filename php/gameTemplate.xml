@@ -59,50 +59,6 @@ and open the template in the editor.
 			<Tile Row="4" Col="2" ResourceType="" DieNumber="" TR="" LR="" RR="" BR="" TLC="" TRC="" BLC="" BRC=""/>
 			<Tile Row="4" Col="3" ResourceType="" DieNumber="" TR="" LR="" RR="" BR="" TLC="" TRC="" BLC="" BRC=""/>
 		</Tiles>
-<!--			
-        <Corner Row="0" Column="0" ResourceType="" DieNumber="" Occupation="Empty" RRoad="Empty" DRoad="Empty"/>
-        <Corner Row="0" Column="1" ResourceType="" DieNumber="" Occupation="Empty" RRoad="Empty" DRoad="Empty"/>
-        <Corner Row="0" Column="2" ResourceType="" DieNumber="" Occupation="Empty" RRoad="Empty" DRoad="Empty"/>
-        <Corner Row="0" Column="3" ResourceType="" DieNumber="" Occupation="Empty" RRoad="Empty" DRoad="Empty"/>
-        <Corner Row="0" Column="4" ResourceType="" DieNumber="" Occupation="Empty" RRoad="Empty" DRoad="Empty"/>
-        <Corner Row="0" Column="5" ResourceType="" DieNumber="" Occupation="Empty" RRoad="Empty" DRoad="Empty"/>
-        
-        <Corner Row="1" Column="0" ResourceType="" DieNumber="" Occupation="Empty" RRoad="Empty" DRoad="Empty"/>
-        <Corner Row="1" Column="1" ResourceType="" DieNumber="" Occupation="Empty" RRoad="Empty" DRoad="Empty"/>
-        <Corner Row="1" Column="2" ResourceType="" DieNumber="" Occupation="Empty" RRoad="Empty" DRoad="Empty"/>
-        <Corner Row="1" Column="3" ResourceType="" DieNumber="" Occupation="Empty" RRoad="Empty" DRoad="Empty"/>
-        <Corner Row="1" Column="4" ResourceType="" DieNumber="" Occupation="Empty" RRoad="Empty" DRoad="Empty"/>
-        <Corner Row="1" Column="5" ResourceType="" DieNumber="" Occupation="Empty" RRoad="Empty" DRoad="Empty"/>
-        
-        <Corner Row="2" Column="0" ResourceType="" DieNumber="" Occupation="Empty" RRoad="Empty" DRoad="Empty"/>
-        <Corner Row="2" Column="1" ResourceType="" DieNumber="" Occupation="Empty" RRoad="Empty" DRoad="Empty"/>
-        <Corner Row="2" Column="2" ResourceType="" DieNumber="" Occupation="Empty" RRoad="Empty" DRoad="Empty"/>
-        <Corner Row="2" Column="3" ResourceType="" DieNumber="" Occupation="Empty" RRoad="Empty" DRoad="Empty"/>
-        <Corner Row="2" Column="4" ResourceType="" DieNumber="" Occupation="Empty" RRoad="Empty" DRoad="Empty"/>
-        <Corner Row="2" Column="5" ResourceType="" DieNumber="" Occupation="Empty" RRoad="Empty" DRoad="Empty"/>
-        
-        <Corner Row="3" Column="0" ResourceType="" DieNumber="" Occupation="Empty" RRoad="Empty" DRoad="Empty"/>
-        <Corner Row="3" Column="1" ResourceType="" DieNumber="" Occupation="Empty" RRoad="Empty" DRoad="Empty"/>
-        <Corner Row="3" Column="2" ResourceType="" DieNumber="" Occupation="Empty" RRoad="Empty" DRoad="Empty"/>
-        <Corner Row="3" Column="3" ResourceType="" DieNumber="" Occupation="Empty" RRoad="Empty" DRoad="Empty"/>
-        <Corner Row="3" Column="4" ResourceType="" DieNumber="" Occupation="Empty" RRoad="Empty" DRoad="Empty"/>
-        <Corner Row="3" Column="5" ResourceType="" DieNumber="" Occupation="Empty" RRoad="Empty" DRoad="Empty"/>
-        
-        <Corner Row="4" Column="0" ResourceType="" DieNumber="" Occupation="Empty" RRoad="Empty" DRoad="Empty"/>
-        <Corner Row="4" Column="1" ResourceType="" DieNumber="" Occupation="Empty" RRoad="Empty" DRoad="Empty"/>
-        <Corner Row="4" Column="2" ResourceType="" DieNumber="" Occupation="Empty" RRoad="Empty" DRoad="Empty"/>
-        <Corner Row="4" Column="3" ResourceType="" DieNumber="" Occupation="Empty" RRoad="Empty" DRoad="Empty"/>
-        <Corner Row="4" Column="4" ResourceType="" DieNumber="" Occupation="Empty" RRoad="Empty" DRoad="Empty"/>
-        <Corner Row="4" Column="5" ResourceType="" DieNumber="" Occupation="Empty" RRoad="Empty" DRoad="Empty"/>
-        
-        <Corner Row="5" Column="0" ResourceType="" DieNumber="" Occupation="Empty" RRoad="Empty" DRoad="Empty"/>
-        <Corner Row="5" Column="1" ResourceType="" DieNumber="" Occupation="Empty" RRoad="Empty" DRoad="Empty"/>
-        <Corner Row="5" Column="2" ResourceType="" DieNumber="" Occupation="Empty" RRoad="Empty" DRoad="Empty"/>
-        <Corner Row="5" Column="3" ResourceType="" DieNumber="" Occupation="Empty" RRoad="Empty" DRoad="Empty"/>
-        <Corner Row="5" Column="4" ResourceType="" DieNumber="" Occupation="Empty" RRoad="Empty" DRoad="Empty"/>
-        <Corner Row="5" Column="5" ResourceType="" DieNumber="" Occupation="Empty" RRoad="Empty" DRoad="Empty"/>
-
--->
     </GameBoard>
     
 </CatanGame>

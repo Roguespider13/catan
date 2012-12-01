@@ -131,6 +131,7 @@
 		
 		public function resumeGame($gameID)
 		{
+			$this->gameID = $gameID;
 			$gameManager = new GameManager();
 			
 			$xmlFileName = $gameManager->getGameXML($this->gameID);
@@ -138,19 +139,26 @@
 			if ($gameXML->GameNumber != $this->gameID)
 				throw new Exception("Bad Game XML.");
 			$playersXML = $gameXML->Players;
-			
-			if (count($playersXML) != 2)
+			$playerNodes = $playersXML->Player;
+			if (count($playerNodes) != 2)
 				throw new Exception("Bad Game XML.");
 			
 			$this->gameState = $gameXML->GameState;
 			$this->playerTurn = $playersXML->attributes()->turn;
-			$this->player1 = Player($playersXML[0]->attributes()->id);
-			$this->player1->reconstruct($playersXML[0]);
+			$this->player1 = new Player($playerNodes[0]->attributes()->id);
+			$this->player1->reconstruct($playerNodes[0]);
 			
-			$this->player2 = Player($playersXML[1]->attributes()->id);
-			$this->player2->reconstruct($playersXML[1]);
+			$this->player2 = new Player($playerNodes[1]->attributes()->id);
+			$this->player2->reconstruct($playerNodes[1]);
 			
-			$this->boardLayout = BoardLayout::reconstructLayout($gameID->GameBoard);
+			// Consider removing Player1, Player2 variables and just using array
+			$this->playersByID = array();
+
+			$this->playersByID[(string) $this->player1->getPlayerID()] = $this->player1;
+			$this->playersByID[(string) $this->player2->getPlayerID()] = $this->player2;
+			
+			$this->boardLayout = new BoardLayout();
+			$this->boardLayout->reconstructLayout($gameXML->GameBoard);
 			
 			$logManager = new LogManager();
 			$this->gameLogFile = $logManager->getOngoingLogFile($gameID);
@@ -201,6 +209,14 @@
 		
 		public function getGameState()
 		{	return $this->gameState;	}
+		
+		public function getPlayer($playerID)
+		{
+			if (array_key_exists($playerID, $this->playersByID))
+				return $this->playersByID[$playerID];
+			throw new Exception("Player not found.");
+			
+		}
 		
 		private function checkWinningConditions()
 		{
@@ -277,6 +293,7 @@
 			$initialPlacement = false;
 			if ($this->gameState == "Initial")
 				$initialPlacement = true;
+
 			if (!$this->boardLayout->canBuildSettlement($playerID, $x, $y, $buildPosition, $initialPlacement))
 				throw new Exception("Can not build there.");
 			

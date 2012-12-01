@@ -33,6 +33,7 @@ class BoardTile	{
 		$tileXML->setAttribute("Row", $this->row);
 		$tileXML->setAttribute("Col", $this->col);
 		$tileXML->setAttribute("ResType", $this->getResourceType());
+		$tileXML->setAttribute("DieNumber", $this->rollNumber);
 		//Roads
 		$tileXML->setAttribute("TR", $this->topRoad);
 		$tileXML->setAttribute("LR", $this->leftRoad);
@@ -49,20 +50,20 @@ class BoardTile	{
 	
 	public function reconstructTile($tileXML)
 	{
-		$this->row = $tileXML->attributes()->Row;
-		$this->col = $tileXML->attributes()->Col;
-		$this->setResourceType($tileXML->attributes()->ResType);
-		$this->setRollNumber($tileXML->attributes()->DieNumber);
+		$this->row = intval($tileXML->attributes()->Row);
+		$this->col = intval($tileXML->attributes()->Col);
+		$this->setResourceType((string) $tileXML->attributes()->ResType);
+		$this->setRollNumber(intval($tileXML->attributes()->DieNumber));
 		
-		$this->topRoad = $tileXML->attributes()->TR;
-		$this->rightRoad = $tileXML->attributes()->RR;
-		$this->leftRoad = $tileXML->attributes()->LR;
-		$this->bottomRoad = $tileXML->attributes()->BR;
+		$this->topRoad = (string) $tileXML->attributes()->TR;
+		$this->rightRoad = (string) $tileXML->attributes()->RR;
+		$this->leftRoad = (string) $tileXML->attributes()->LR;
+		$this->bottomRoad = (string) $tileXML->attributes()->BR;
 		
-		$this->topLeftCorner = $tileXML->attributes()->TLC;
-		$this->topRightCorner = $tileXML->attributes()->TRC;
-		$this->bottomLeftCorner = $tileXML->attributes()->BLC;
-		$this->bottomRightCorner = $tileXML->attributes()->BRC;
+		$this->topLeftCorner = (string) $tileXML->attributes()->TLC;
+		$this->topRightCorner = (string) $tileXML->attributes()->TRC;
+		$this->bottomLeftCorner = (string) $tileXML->attributes()->BLC;
+		$this->bottomRightCorner = (string) $tileXML->attributes()->BRC;
 	}
 	
 	public function getRow()
@@ -257,6 +258,10 @@ class BoardLayout	{
 	private $robber;
 	private $tilesByDieNumber = array();
 	
+	public function __construct() {
+		
+	}
+	
 	public function createLayout() {
 		$dieArray = array(2,3,4,5,6,8,9,10,11,12);
 		$extraDie = array(3,4,5,6,8,9,10,11);
@@ -282,8 +287,8 @@ class BoardLayout	{
 	public function reconstructLayout($boardXML)
 	{
 		$this->fillDieArray();
-		$this->robber["Row"] = $boardXML->Robber->attributes()->Row;
-		$this->robber["Col"] = $boardXML->Robber->attributes()->Col;
+		$this->robber["Row"] = intval($boardXML->Robber->attributes()->Row);
+		$this->robber["Col"] = intval($boardXML->Robber->attributes()->Col);
 		
 		$tiles = $boardXML->Tiles->Tile;
 		
@@ -291,7 +296,7 @@ class BoardLayout	{
 		
 		foreach ($tiles as $tileXML)
 		{
-			$tempTile = BoardTile(0,0);
+			$tempTile = new BoardTile(0,0);
 			$tempTile->reconstructTile($tileXML);
 			$this->boardLayout[$tempTile->getRow()] [$tempTile->getColumn()] = $tempTile;
 			$this->tilesByDieNumber[$tempTile->getRollNumber()][] = $tempTile;
@@ -521,18 +526,20 @@ class BoardLayout	{
 			if ($y > 0)
 				$adjTile2 = $this->boardLayout[$x][$y-1];
 		}
-		
-		if ($adjTile1)
+
+		if ($adjTile1 && $adjTile1->getOccupation($position))
 			$adjOccupations[] = $adjTile1->getOccupation($position);
-		if ($adjTile2)
+		if ($adjTile2 && $adjTile1->getOccupation($position))
 			$adjOccupations[] = $adjTile2->getOccupation($position);
 		
 		switch ($position)
 		{
-			case "topRght":
-				$adjOccupations[] = $tile->getOccupation("topLeft");
-				$adjOccupations[] = $tile->getOccupation("bottomRight");
-						
+			case "topRight":
+				if ($tile->getOccupation("topLeft"))
+					$adjOccupations[] = $tile->getOccupation("topLeft");
+				if ($tile->getOccupation("bottomRight"))
+					$adjOccupations[] = $tile->getOccupation("bottomRight");
+				
 				if ($adjTile1)
 					$adjRoads[] = $adjTile1->getRoad("right");
 
@@ -541,8 +548,10 @@ class BoardLayout	{
 				break;
 			
 			case "topLeft":
-				$adjOccupations[] = $tile->getOccupation("topRight");
-				$adjOccupations[] = $tile->getOccupation("bottomLeft");
+				if ($tile->getOccupation("topRight"))
+					$adjOccupations[] = $tile->getOccupation("topRight");
+				if ($tile->getOccupation("bottomLeft"))
+					$adjOccupations[] = $tile->getOccupation("bottomLeft");
 						
 				if ($adjTile1)
 					$adjRoads[] = $adjTile1->getRoad("left");
@@ -550,7 +559,9 @@ class BoardLayout	{
 					$adjRoads[] = $adjTile2->getRoad("top");
 				break;
 			case "bottomLeft":
+				if ($tile->getOccupation("topLeft"))
 				$adjOccupations[] = $tile->getOccupation("topLeft");
+				if ($tile->getOccupation("bottomRight"))
 				$adjOccupations[] = $tile->getOccupation("bottomRight");
 						
 				if ($adjTile1)
@@ -559,8 +570,10 @@ class BoardLayout	{
 					$adjRoads[] = $adjTile2->getRoad("bottom");
 				break;
 			case "bottomRight":
-				$adjOccupations[] = $tile->getOccupation("topRight");
-				$adjOccupations[] = $tile->getOccupation("bottomLeft");
+				if ($tile->getOccupation("topRight"))
+					$adjOccupations[] = $tile->getOccupation("topRight");
+				if ($tile->getOccupation("bottomLeft"))
+					$adjOccupations[] = $tile->getOccupation("bottomLeft");
 						
 				if ($adjTile1)
 					$adjRoads[] = $adjTile1->getRoad("right");
@@ -579,6 +592,7 @@ class BoardLayout	{
 		
 		if (! empty($adjOccupations))
 			return false;
+
 		
 		return true;
 	}
@@ -600,7 +614,7 @@ class BoardLayout	{
 	 * 2. A settlement to connect to.
 	 * Even more checking.
 	 */
-	public function canBuildRoad($playerID, $position, $x, $y)
+	public function canBuildRoad($playerID, $x, $y, $position)
 	{
 		if (!$this->insideBoardBoundaries($x, $y))
 			throw new Exception("Outside board boundaries.");
@@ -678,7 +692,7 @@ class BoardLayout	{
 				$adjRoads[] = $tile->getPlayerOccupation("topRight");
 				$adjRoads[] = $tile->getPlayerOccupation("bottomRight");
 				break;
-			case "top":
+			case "bottom":
 				if ($tile->getRoad("bottom") != "")
 					return false;
 				$adjRoads[] = $tile->getRoad("left");
@@ -697,7 +711,7 @@ class BoardLayout	{
 				$adjRoads[] = $tile->getPlayerOccupation("bottomRight");
 				break;
 		}
-		
+
 		if (in_array($playerID, $adjRoads))
 			return true;
 		
@@ -706,7 +720,7 @@ class BoardLayout	{
 	
 	public function buildRoad($playerID, $x, $y, $position)
 	{
-		if (! $this->canBuildRoad($playerID, $position, $x, $y))
+		if (! $this->canBuildRoad($playerID, $x, $y, $position))
 			throw new Exception("Cannot Build there.");
 		
 		$tile = $this->boardLayout[$x][$y];

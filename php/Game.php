@@ -147,7 +147,7 @@
 			$stateArr = explode("-", (string) $gameXML->GameState);
 			$this->gameState = $stateArr[0];
 			if (array_key_exists(1, $stateArr) && self::$INITIAL_STATE_TAG)
-				$this->initialCount = $stateArr[1];
+				$this->initialCount = intval ($stateArr[1]);
 			if (array_key_exists(2, $stateArr) && self::$INITIAL_STATE_TAG)
 				$this->initialTurn = $stateArr[2];
 				

@@ -198,6 +198,9 @@
 			$this->checkWinningConditions();
 		}
 		
+		public function getGameBoard()
+		{	return $this->boardLayout->getGameBoard();	}
+		
 		public function performDieRoll()
 		{	return rand(1, 6);	}
 		

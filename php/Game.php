@@ -40,16 +40,13 @@
 		
 		private $initialTurn;
 		private $initialCount;
+		private $lastTurnChange;
 		
 		public function __construct()
-		{
-
-		}
+		{}
 
 		public function getGameID()
-		{
-			return $this->gameID;
-		}
+		{	return $this->gameID;	}
         
 		public function createGame($gameID, $creatorName, $player2, $gameXML) 
 		{
@@ -77,6 +74,7 @@
 			$this->boardLayout = new BoardLayout();
 			$this->boardLayout->createLayout();
 			$this->playerTurn = $creatorName;
+			$this->lastTurnChange = time();
 
 			$this->createGameXML($gameXML);
 			$logManager = new LogManager();
@@ -133,6 +131,7 @@
 			
 			$playersXML = $xmlDoc->createElement("Players");
 			$playersXML->setAttribute("turn", $this->playerTurn);
+			$playersXML->setAttribute("lastTurnChange", $this->lastTurnChange);
 			$rootNode->appendChild($playersXML);
 			$playersXML->appendChild($this->player1->getPlayerXML($xmlDoc, "Player"));
 			$playersXML->appendChild($this->player2->getPlayerXML($xmlDoc, "Player"));
@@ -178,6 +177,7 @@
 				
 			
 			$this->playerTurn = (string) $playersXML->attributes()->turn;
+			$this->lastTurnChange = intval($playersXML->attibutes()->lastTurnChange);
 			$this->player1 = new Player((string) $playerNodes[0]->attributes()->id);
 			$this->player1->reconstruct($playerNodes[0]);
 			
@@ -301,11 +301,15 @@
 				{
 					$this->writeToLog("Player " . $this->playerTurn . " has ended his turn. Control now goes to " . $playerID);
 					$this->playerTurn = $playerID;
+					$this->lastTurnChange = time();
 					$this->createGameXML();
 					$this->checkWinningConditions();
 					return true;
 				}
 		}
+		
+		public function getLastTurnChange()
+		{	return $this->lastTurnChange;	}
 
 
 		// Position can be left, right, top, bottom.

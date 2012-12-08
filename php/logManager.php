@@ -25,7 +25,7 @@ class LogManager
 
 			if ($fileInfo["extension"] == "log")
 			{
-				$this->onGoingGameLogs[$gameID] = $logFile;
+				$this->onGoingGameLogs[$gameID] = $this->onGoingGameFolder . $logFile;
 			}
 		}
 
@@ -41,7 +41,7 @@ class LogManager
 
 			if ($fileInfo["extension"] == "log")
 			{
-				$this->completedGameLogs[$gameID] = $logFile;
+				$this->completedGameLogs[$gameID] = $this->completedGameFolder . $logFile;
 			}
 		}
 	}

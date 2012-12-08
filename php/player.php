@@ -147,6 +147,9 @@ class Player {
 
 		return true;
 	}
+	
+	public function declareForfeitWinner($pointsToWin)
+	{	$this->victoryPoints=$pointsToWin;	}
 
 	public function getPlayerXML($xmlDoc, $xmlTag)
 	{

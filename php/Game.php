@@ -4,6 +4,7 @@
 	require_once 'InputValidator.php';
 	require_once 'logManager.php';
 	require_once 'gameManager.php';
+	require_once 'UserManager.php';
 
 	// Each game has a creator, two participants, and a board layout
 	class Game {
@@ -12,6 +13,8 @@
 		private static $POINTS_TO_WIN = 8;
 		private static $INITIAL_STATE_TAG = "Initial";
 		private static $GAME_SCHEMA_FILE = "./gameXML.xsd";
+		private static $FORCE_FORFEIT_TIMEOUT = 600;
+		
 		private $creatorName;
 
 		// Name of the game
@@ -202,7 +205,11 @@
 		{	return $this->boardLayout->getGameBoard();	}
 		
 		public function performDieRoll()
-		{	return rand(1, 6);	}
+		{	
+			$seed = openssl_random_pseudo_bytes(64);
+			mt_srand(bindec($seed));
+			return mt_rand(1, 6);
+		}
 		
 		
 		public function setDice($die1, $die2)
@@ -260,6 +267,18 @@
 			
 		}
 		
+		public function forceForfeit()
+		{
+			if ( !$this->canForceForfeit())
+				throw new Exception("Timeout not exceeded. Can't force forfeit.");
+			
+			$this->forcePlayerForfeit();
+			
+		}
+		
+		public function canForceForfeit()
+		{	return ((time() - $this->lastTurnChange) >= self::$FORCE_FORFEIT_TIMEOUT); }
+		
 		private function checkWinningConditions()
 		{
 			$winner = "";
@@ -273,11 +292,42 @@
 			
 			if (! $winner)
 				return false;
-			$this->gameState = "Completed";
-			$logManager = new LogManager();
-			$logManager->closeOngoingLog($this->gameID);
-			$this->createGameXML();
-			throw new GameOverException($winner); 
+
+			$this->closeGame($winner);
+		}
+		
+		private function forcePlayerForfeit()
+		{
+			/* @var $player Player */
+			foreach ($this->playersByID as $player)
+				if ($player->getPlayerID() != $this->playerTurn)
+				{
+					$winner = $player->getPlayerID();
+					$player->declareForfeitWinner(self::$POINTS_TO_WIN);
+					break;
+				}
+			$this->writeToLog("Player " . $this->playerTurn . " has been declared forfeit. Player " . $winner . " has been declared the winner.");
+			$this->closeGame($winner);			
+		}
+		
+		private function closeGame($winnerID)
+		{
+			if ($this->gameState != "Completed")
+			{
+				$userMan = new UserManager();
+				$logMan = new LogManager();
+				/* @var $player Player */
+				foreach ($this->playersByID as $player)
+					if ($player->getPlayerID() == $winnerID)
+						$userMan->addUserWin($player->getPlayerID());
+					else
+						$userMan->addUserLoss($player->getPlayerID ());
+				$this->gameState = "Completed";
+				$logMan->closeOngoingLog($this->gameID);
+				$this->createGameXML();
+			}
+			throw new GameOverException($winnerID);
+			
 		}
 		
 		private function getPlayerToken($playerID)
@@ -306,6 +356,8 @@
 					$this->checkWinningConditions();
 					return true;
 				}
+
+			return false;
 		}
 		
 		public function getLastTurnChange()

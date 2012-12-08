@@ -151,6 +151,7 @@
 			<xs:sequence>
 				<xs:element ref="Player" maxOccurs="unbounded"/>
 			</xs:sequence>
+			<xs:attribute name="lastTurnChange" type="xs:int" use="required"/>
 			<xs:attribute name="turn" use="required">
 				<xs:simpleType>
 					<xs:restriction base="xs:string">

@@ -273,9 +273,11 @@ class BoardLayout	{
 		$extraDie = array(3,4,5,6,8,9,10,11);
 		$resourceArray = array("desert", "brick", "brick", "brick", "lumber", "lumber", "lumber", "ore", "ore", "ore", "wheat", "wheat", "wheat", "wool", "wool", "wool");
 		
+		$seed = openssl_random_pseudo_bytes(64);
+		mt_srand(bindec($seed));
 		for ($i=0; $i < 5; $i++)
 		{
-			$index = rand(0, count($extraDie)-1);
+			$index = mt_rand(0, count($extraDie)-1);
 			$dieArray[] = $extraDie[$index];
 			unset($extraDie[$index]);
 			$extraDie = array_values($extraDie);

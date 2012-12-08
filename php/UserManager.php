@@ -43,6 +43,9 @@ class UserManager
 		fclose($usrHandle);		
 	}
 	
+	public function getAllUsers()
+	{	return array_keys($this->currentUserFiles);	}
+	
 	public function authenticateUser($username, $password)
 	{
 		if (! $this->doesUserExist($username))

@@ -4,7 +4,7 @@
     session_destroy();    // Destroy the session itself
     setcookie('PHPSESSID', '', time()-300, '/', '', 0); // Destroy cookie
 
-    $url = "http://localhost:20191/catan/index.php";
+    $url = "/catan2/index.php";
     header("Location: $url");
     exit;
 ?>

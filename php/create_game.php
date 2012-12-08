@@ -1,14 +1,16 @@
 <?php
     session_start();
     require_once 'gameManager.php';
-    
-    $url = "http://localhost:20191/catan/index.php";
+
+    $url = "/catan2/index.php";
     if (isset($_POST['create'])) {
         try {
-            //$game = new Game($_POST['playerName'], $_POST['gameName']);
             $manager = new GameManager();
-            $manager->createEmptyGame($_SESSION['username']);
-            $url = "http://localhost:20191/catan/main.php";
+            $_SESSION['GAMEID'] = $manager->createEmptyGame($_SESSION['username']);
+            $_SESSION['TURN'] = $_SESSION['username'];
+            $_SESSION['FLOW'] = "";
+            
+            $url = "/catan2/php/main.php";
             header("Location: $url");
             exit;
         }

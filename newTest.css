@@ -3,66 +3,11 @@ body {
 	font-family:'Carrois Gothic', sans-serif;
 }
 
-nav {
-	position:relative;
-	height:70px;
-	margin-bottom:50px;
-	box-shadow:0 1px 3px #b1b4e7;
-}
-
-nav h1 {
-	margin-left:50px;
-	float:left;
-}
-
-nav a {
-	text-decoration:none;
-	margin-left:25px;
-	color:black;
-}
-
-nav a:hover {
-	color:#a5a6b0;
-}
-
-nav a:active {
-	color:#b1b4e7;
-}
-
-nav ul {
-	float:right;
-	list-style:none;
-	margin-right:100px;
-	margin-top:25px;
-}
-
-nav ul li {
-	display:inline;
-}
-
-#main-container {
-	width:85%;
-	padding:-10px;
-	overflow:hidden;
-	margin-left:auto;
-	margin-right:auto;
-	background:white;
-	box-shadow:0 5px 10px #d7d8e5;
-}
-
 #left-sidebar {
 	position:relative;
 	float:left;
 	width:200px;
 	margin-left:25px;
-}
-
-#start-join {
-    position:relative;
-	float:left;
-	width:800px;
-	margin-left:25px;
-    border: 1px solid #808080;
 }
 
 #left-sidebar img {
@@ -74,20 +19,6 @@ nav ul li {
 	position:relative;
 	float:right;
 	width:20%;
-}
-
-#center {
-	position:relative;
-	float:left;
-	width:45%;
-	margin-left:25px;
-	margin-right:25px;
-	padding-left: 8%;
-}
-
-#center img {
-	height:100px;
-	width:100px;
 }
 
 footer {

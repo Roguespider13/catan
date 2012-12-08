@@ -1,16 +1,19 @@
 <?php
     session_start();
     require_once 'User.php';
-    
-    $url = "http://localhost:20191/catan/index.php";
+    require_once 'UserManager.php';
+
+    $url = "/catan2/index.php";
     if (isset($_POST['register'])) {
         try {
             $user = new User();
             $user->setUsername($_POST['register_username']);
             $user->comparePasswords($_POST['password1'], $_POST['password2']);
-            
-            // TODO Add user to users XML file
-            $url = "http://localhost:20191/catan/create_or_join.php";
+
+            $um = new UserManager();
+            $um->createUser($_POST['register_username'], $_POST['password1']);
+
+            $url = "/catan2/php/create_or_join.php";
             $_SESSION['username'] = $_POST['register_username'];
             header("Location: $url");
             exit;

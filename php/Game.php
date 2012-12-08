@@ -177,7 +177,7 @@
 				
 			
 			$this->playerTurn = (string) $playersXML->attributes()->turn;
-			$this->lastTurnChange = intval($playersXML->attibutes()->lastTurnChange);
+			$this->lastTurnChange = intval($playersXML->attributes()->lastTurnChange);
 			$this->player1 = new Player((string) $playerNodes[0]->attributes()->id);
 			$this->player1->reconstruct($playerNodes[0]);
 			

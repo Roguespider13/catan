@@ -1,11 +1,12 @@
 <?php
-    require_once 'boardLayout.php';
-    require_once 'player.php';
-    require_once 'InputValidator.php';
+	require_once 'boardLayout.php';
+	require_once 'player.php';
+	require_once 'InputValidator.php';
 	require_once 'logManager.php';
-    
-    // Each game has a creator, two participants, and a board layout
-    class Game {
+	require_once 'gameManager.php';
+
+	// Each game has a creator, two participants, and a board layout
+	class Game {
 		// Name of the game creator as entered when creating the game
 
 		private static $POINTS_TO_WIN = 8;

@@ -107,7 +107,7 @@ class BoardTile	{
 				break;
 			case "bottom":
 				$this->bottomRoad = $playerID;
-				break;			
+				break;
 		}
 	}
 	

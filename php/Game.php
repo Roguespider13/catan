@@ -205,11 +205,7 @@
 		{	return $this->boardLayout->getGameBoard();	}
 		
 		public function performDieRoll()
-		{	
-			$seed = openssl_random_pseudo_bytes(64);
-			mt_srand(bindec($seed));
-			return mt_rand(1, 6);
-		}
+		{	return rand(1, 6);	}
 		
 		
 		public function setDice($die1, $die2)

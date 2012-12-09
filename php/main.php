@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <?php
     require_once 'force_authentication.php';
+    
+    // Redirect the user back to the create or join page if no games have been started
+    if (!isset($_SESSION['GAMEID'])) {
+        $url = "/catan2/php/create_or_join.php";
+        header("Location: $url");
+        exit;
+    }
+    
     require_once 'gameManager.php';
 ?>
 <html>
@@ -90,6 +98,10 @@
                 catch (GameOverException $e) {
                     $_SESSION['ERROR'] = $e->getErrorMessage();
                     $_SESSION['STATUS'] = "GAMEOVER";
+                    $_SESSION['TURN'] = "";
+                }
+                catch (Exception $e) {
+                    $_SESSION['ERROR'] = $e->getMessage();
                 }
                 
                 if (isset($_SESSION['ERROR'])) {
@@ -101,7 +113,7 @@
                     $_SESSION['FLOW'] = "OPTIONS";
                 }
 
-		//echo "Welcome, " . $_SESSION['username'] . "!";
+                //echo "Welcome, " . $_SESSION['username'] . "!";
                 //echo "&nbsp;&nbsp;Game ID: " . $_SESSION['GAMEID'];
                 //echo "<br />Status: " . $_SESSION['STATUS'];
                 //echo "<br />Turn: " . $_SESSION['TURN'];

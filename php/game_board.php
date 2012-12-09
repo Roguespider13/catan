@@ -67,14 +67,14 @@
 						case 0:
 							$tile00[0] = $tile->getResourceType();
 							$tile00[1] = $tile->getRollNumber();
-                                                        $tile00[2] = determineSettlementTypeAndColor($tile->getOccupation("topLeft"));
-                                                        $tile00[3] = determineSettlementTypeAndColor($tile->getOccupation("topRight"));
-                                                        $tile00[4] = determineSettlementTypeAndColor($tile->getOccupation("bottomLeft"));
-                                                        $tile00[5] = determineSettlementTypeAndColor($tile->getOccupation("bottomRight"));
-                                                        $tile00[6] = determineRoadTypeAndColor($tile->getRoad("top"), "h");
-                                                        $tile00[7] = determineRoadTypeAndColor($tile->getRoad("right"), "v");
-                                                        $tile00[8] = determineRoadTypeAndColor($tile->getRoad("bottom"), "h");
-                                                        $tile00[9] = determineRoadTypeAndColor($tile->getRoad("left"), "v");
+                            $tile00[2] = determineSettlementTypeAndColor($tile->getOccupation("topLeft"));
+                            $tile00[3] = determineSettlementTypeAndColor($tile->getOccupation("topRight"));
+                            $tile00[4] = determineSettlementTypeAndColor($tile->getOccupation("bottomLeft"));
+                            $tile00[5] = determineSettlementTypeAndColor($tile->getOccupation("bottomRight"));
+                            $tile00[6] = determineRoadTypeAndColor($tile->getRoad("top"), "h");
+                            $tile00[7] = determineRoadTypeAndColor($tile->getRoad("right"), "v");
+                            $tile00[8] = determineRoadTypeAndColor($tile->getRoad("bottom"), "h");
+                            $tile00[9] = determineRoadTypeAndColor($tile->getRoad("left"), "v");
 							break;
 						case 1:
 							$tile01[0] = $tile->getResourceType();

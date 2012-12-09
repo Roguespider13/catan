@@ -61,11 +61,25 @@
     </div>
   </div>
 
-  <div id="container-fluid">
-    <div class="row-fluid">
-      <div class="statistics">
-        <!-- PUT THE STATISTICS STUFF HERE -->
-      </div>
+    <div id="container-fluid">
+        <div class="row-fluid">
+            <div class="statistics">
+                <?php
+                    require_once 'UserManager.php';
+                    
+                    $um = new UserManager();
+                    $users = $um->getAllUsers();
+                    
+                    echo "<h3>User Stats</h3>";
+                    foreach ($users as $user) {
+                        echo htmlentities($user);
+                        echo "<ul>";
+                            echo "<li>Wins:&nbsp;" . htmlentities($um->getUserWins($user)) . "</li>";
+                            echo "<li>Losses:&nbsp;" . htmlentities($um->getUserLoses($user)) . "</li>";
+                        echo "</ul>";
+                    }
+                ?>
+            </div>
+        </div>
     </div>
-  </div>
 </body>

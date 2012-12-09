@@ -11,6 +11,12 @@
                     $msg .= ", please place your settlement.";
                 else
                     $msg .= ", please place your road.";
+                
+                /* @var $game Game */
+                if ($game->canForceForfeit() === TRUE &&
+                    $_SESSION['username'] !== $_SESSION['TURN']) {
+                    $msg .= "<br /><br />Your opponent appears to not be responding.  Click <a href=\"forceForfeit.php\">here</a> to force opponent forfeit.";
+                }
 
                 break;
             case "Ongoing":
@@ -20,7 +26,7 @@
                         if ($gm->isGame($_SESSION['GAMEID']) === TRUE) {
                             $msg .= ", you may:";
                             $msg .= "<ul>";
-                            $msg .= "<div>Options</div>";
+                            //$msg .= "<div>Options</div>";
                             $msg .= "<ul>";
                                 $msg .= "<li>Build Road</li>";
                                 $msg .= "<li>Build Settlement</li>";
@@ -34,7 +40,7 @@
                             $msg .= "Your resources:<br /><ul>";
                             if (isset($cards)) {
                                 foreach ($cards as $key => $value) {
-                                    $msg .= "<li>" . ucwords($key) . ": " . $value . "</li>";
+                                    $msg .= "<li>" . htmlentities(ucwords($key)) . ": " . htmlentities($value) . "</li>";
                                 }
                             }
                             $msg .= "</ul>";
@@ -47,13 +53,12 @@
                         $msg .= "Your resources:<br /><ul>";
                         if (isset($cards)) {
                             foreach ($cards as $key => $value) {
-                                $msg .= "<li>" . ucwords($key) . ": " . $value . "</li>";
+                                $msg .= "<li>" . htmlentities(ucwords($key)) . ": " . htmlentities($value) . "</li>";
                             }
                         }
                         $msg .= "</ul>";
                         
                         /* @var $game Game */
-
                         if ($game->canForceForfeit() === TRUE) {
                             $msg .= "Your opponent appears to not be responding.  Click <a href=\"forceForfeit.php\">here</a> to force opponent forfeit.";
                         }

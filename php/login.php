@@ -18,6 +18,7 @@
 
             $url = "/catan2/php/create_or_join.php";
             $_SESSION['username'] = $_POST['login_username'];
+            unset($_SESSION['GAMEID']);
             header("Location: $url");
             exit;
         }

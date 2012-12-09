@@ -546,10 +546,10 @@ class BoardLayout	{
 				if ($tile->getOccupation("bottomRight"))
 					$adjOccupations[] = $tile->getOccupation("bottomRight");
 				
-				if ($adjTile1)
+				if (isset($adjTile1))
 					$adjRoads[] = $adjTile1->getRoad("right");
 
-				if ($adjTile2)
+				if (isset($adjTile2))
 					$adjRoads[] = $adjTile2->getRoad("top");
 				break;
 			
@@ -559,9 +559,9 @@ class BoardLayout	{
 				if ($tile->getOccupation("bottomLeft"))
 					$adjOccupations[] = $tile->getOccupation("bottomLeft");
 						
-				if ($adjTile1)
+				if (isset($adjTile1))
 					$adjRoads[] = $adjTile1->getRoad("left");
-				if ($adjTile2)
+				if (isset($adjTile2))
 					$adjRoads[] = $adjTile2->getRoad("top");
 				break;
 			case "bottomLeft":
@@ -570,9 +570,9 @@ class BoardLayout	{
 				if ($tile->getOccupation("bottomRight"))
 				$adjOccupations[] = $tile->getOccupation("bottomRight");
 						
-				if ($adjTile1)
+				if (isset($adjTile1))
 					$adjRoads[] = $adjTile1->getRoad("left");
-				if ($adjTile2)
+				if (isset($adjTile2))
 					$adjRoads[] = $adjTile2->getRoad("bottom");
 				break;
 			case "bottomRight":
@@ -581,9 +581,9 @@ class BoardLayout	{
 				if ($tile->getOccupation("bottomLeft"))
 					$adjOccupations[] = $tile->getOccupation("bottomLeft");
 						
-				if ($adjTile1)
+				if (isset($adjTile1))
 					$adjRoads[] = $adjTile1->getRoad("right");
-				if ($adjTile2)
+				if (isset($adjTile2))
 					$adjRoads[] = $adjTile2->getRoad("bottom");
 				break;
 			
@@ -652,12 +652,12 @@ class BoardLayout	{
 				$adjRoads[] = $tile->getRoad("right");
 				if ($leftTile) //Left
 					$adjRoads[] = $leftTile->getRoad("top");
-				if ($upperTile) //Upper
+				if (isset($upperTile)) //Upper
 				{
 					$adjRoads[] = $upperTile->getRoad("left");
 					$adjRoads[] = $upperTile->getRoad("right");
 				}
-				if ($rightTile) //Right
+				if (isset($rightTile)) //Right
 					$adjRoads[] = $rightTile->getRoad("top");
 				
 				$adjRoads[] = $tile->getPlayerOccupation("topLeft");
@@ -669,14 +669,14 @@ class BoardLayout	{
 					return false;
 				$adjRoads[] = $tile->getRoad("top");
 				$adjRoads[] = $tile->getRoad("bottom");
-				if ($lowerTile) //Bottom
+				if (isset($lowerTile)) //Bottom
 					$adjRoads[] = $lowerTile->getRoad("left");
-				if ($leftTile) //Left
+				if (isset($leftTile)) //Left
 				{
 					$adjRoads[] = $leftTile->getRoad("top");
 					$adjRoads[] = $leftTile->getRoad("bottom");
 				}
-				if ($upperTile) // Upper
+				if (isset($upperTile)) // Upper
 					$adjRoads[] = $upperTile->getRoad("left");
 				$adjRoads[] = $tile->getPlayerOccupation("topLeft");
 				$adjRoads[] = $tile->getPlayerOccupation("bottomLeft");
@@ -686,15 +686,15 @@ class BoardLayout	{
 					return false;
 				$adjRoads[] = $tile->getRoad("top");
 				$adjRoads[] = $tile->getRoad("bottom");
-				if ($upperTile) //Upper
+				if (isset($upperTile)) //Upper
 					$adjRoads[] = $upperTile->getRoad("right");
 				
-				if ($rightTile) //Right
+				if (isset($rightTile)) //Right
 				{
 					$adjRoads[] = $rightTile->getRoad("top");
 					$adjRoads[] = $rightTile->getRoad("bottom");
 				}
-				if ($lowerTile) // Lower
+				if (isset($lowerTile)) // Lower
 					$adjRoads[] = $lowerTile->getRoad("right");
 				$adjRoads[] = $tile->getPlayerOccupation("topRight");
 				$adjRoads[] = $tile->getPlayerOccupation("bottomRight");
@@ -704,14 +704,14 @@ class BoardLayout	{
 					return false;
 				$adjRoads[] = $tile->getRoad("left");
 				$adjRoads[] = $tile->getRoad("right");
-				if ($rightTile) //Right
+				if (isset($rightTile)) //Right
 					$adjRoads[] = $rightTile->getRoad("bottom");
-				if ($lowerTile) //Lower
+				if (isset($lowerTile)) //Lower
 				{
 					$adjRoads[] = $lowerTile->getRoad("left");
 					$adjRoads[] = $lowerTile->getRoad("right");
 				}
-				if ($leftTile) //Left
+				if (isset($leftTile)) //Left
 					$adjRoads[] = $leftTile->getRoad("bottom");
 				
 				$adjRoads[] = $tile->getPlayerOccupation("bottomLeft");

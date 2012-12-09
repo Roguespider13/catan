@@ -2,10 +2,29 @@
 <?php
     require_once 'force_authentication.php';
     require_once 'gameManager.php';
+    
+    $gameMan = new GameManager();
+    $waitingGameId = $gameMan->hasWaitingGame($_SESSION['username']);
+    $openGameId = $gameMan->hasOngoingGame($_SESSION['username']);
+    
+    if ($waitingGameId !== "") {
+        $_SESSION['GAMEID'] = $waitingGameId;
+        $url = "/catan2/php/main.php";
+        header("Location: $url");
+        exit;
+    }
+    
+    if ($openGameId !== "") {
+        $_SESSION['GAMEID'] = $openGameId;
+        $url = "/catan2/php/main.php";
+        header("Location: $url");
+        exit;
+    }
 ?>
 <html>
 <head>
     <title>eCatan - Simple Settlers</title>
+    <meta http-equiv="refresh" content="10" >
     <link rel="shortcut icon" href="favicon.ico">
     <link rel = "stylesheet" type = "text/css" href = "../css/bootstrap.css" media = "all">
     <link href='http://fonts.googleapis.com/css?family=Carrois+Gothic'
@@ -52,6 +71,23 @@
 </head>
 
 <body>
+    <?php
+        // Clear all necessary session variables in case the player navigated
+        // away from a game to start or join a new one.
+        unset($_SESSION['ERROR']);
+        
+        if (isset($_SESSION['STATUS']) && $_SESSION['STATUS'] === "GAMEOVER") {
+            unset($_SESSION['GAMEID']);
+        }
+        
+        //
+        //unset($_SESSION['STATUS']);
+        unset($_SESSION['TURN']);
+        unset($_SESSION['INIT_BUILD']);
+        unset($_SESSION['FLOW']);
+        unset($_SESSION['DIE1']);
+        unset($_SESSION['DIE1']);
+    ?>
     <div class="navbar navbar-inverse navbar-fixed-top">
       <div class="navbar-inner">
         <div class="container">
@@ -92,33 +128,44 @@
                 </thead>
                 <tr>
                     <td>
-                        <form method="post" action="create_game.php">
-                            <div>
-                                 <?php
-                                    $gm = new GameManager();
-                                    $gameList = $gm->getOpenGames();
-
-                                    foreach ($gameList as $game) {
-                                        echo "<br />";
-                                    }
-                                    ?>
-                            </div>
-                            <input class="btn btn-primary" type="submit" value="Create Game" name="create">
-                        </form>
+                        <?php
+                            if (isset($_SESSION['GAMEID'])) {
+                                echo "&nbsp;";
+                            }
+                            else {
+                                echo "<form method=\"post\" action=\"create_game.php\">";
+                                    echo "<input class=\"btn btn-primary\" type=\"submit\" value=\"Create Game\" name=\"create\">";
+                                echo "</form>";
+                            }
+                        ?>
                     </td>
                     <td>
                         <form method="post" action="join_game.php">
-                            <div>
-                                <?php
-                                    $gm = new GameManager();
-                                    $gameList = $gm->getOpenGames();
+                            <?php
+                                if (isset($_SESSION['GAMEID'])) {
+                                    echo "<div>";
+                                        echo "<input type=\"radio\" name=\"game_id\" value=\"{$_SESSION['GAMEID']}\" />{$_SESSION['GAMEID']}<br />";
+                                    echo "</div>";
+                                    echo "<input class=\"btn btn-primary\" type=\"submit\" value=\"Rejoin Game\" name=\"rejoin_game\">";
+                                }
+                                else {
+                                    echo "<div>";
+                                        $gm = new GameManager();
+                                        $gameList = $gm->getOpenGames();
 
-                                    foreach ($gameList as $game) {
-                                        echo "<input type=\"radio\" name=\"game_id\" value=\"$game\" />$game<br />";
+                                        foreach ($gameList as $game) {
+                                            echo "<input type=\"radio\" name=\"game_id\" value=\"$game\" />$game<br />";
+                                        }
+                                    echo "</div>";
+                                    
+                                    if (count($gameList) > 0) {
+                                        echo "<input class=\"btn btn-primary\" type=\"submit\" value=\"Join Game\" name=\"join_game\">";
                                     }
-                                ?>
-                            </div>
-                            <input class="btn btn-primary"type="submit" value="Join Game" name="join_game">
+                                    else {
+                                        echo "No games to join.";
+                                    }
+                                }
+                            ?>
                         </form>
                     </td>
                 </tr>

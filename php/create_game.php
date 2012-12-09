@@ -2,7 +2,7 @@
     session_start();
     require_once 'gameManager.php';
 
-    $url = "/catan2/index.php";
+    $url = "/catan2/create_or_join.php";
     if (isset($_POST['create'])) {
         try {
             $manager = new GameManager();

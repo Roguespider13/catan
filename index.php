@@ -1,4 +1,12 @@
 <!DOCTYPE html>
+<?php
+    session_start();
+    if (isset($_SESSION['username'])) {
+        $url = "/catan2/php/create_or_join.php";
+        header("Location: $url");
+        exit;
+    }
+?>
 <head>
     <title>eCatan</title>
     <link rel="shortcut icon" href="favicon.ico">
@@ -88,12 +96,11 @@
             </div>
         </div>
         <?php
-                   session_start();
-                    if (isset($_SESSION['ERROR'])) {
-                        echo '<div class ="alert-error">', htmlentities($_SESSION['ERROR']), '</div>';
-                        unset($_SESSION['ERROR']);
-                    }
-                ?>
+            if (isset($_SESSION['ERROR'])) {
+                echo '<div class ="alert-error">', htmlentities($_SESSION['ERROR']), '</div>';
+                unset($_SESSION['ERROR']);
+            }
+        ?>
     </div>
 
 </body>

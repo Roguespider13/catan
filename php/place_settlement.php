@@ -12,7 +12,7 @@
 		header("Location: $url");
 		exit;
 	}
-
+        
 	if ($gm->isGame($_SESSION['GAMEID']) === TRUE) {
 		try {
                     // The second player has joined the game, rebuild the game from XML.
@@ -32,9 +32,10 @@
 
                     if (!is_string($bp))
                             throw new Exception("Cannot build there");
-
+                    
                     switch ($_SESSION['STATUS']) {
                         // Initial placements
+                        
                         case "Initial":
                             if ($_SESSION['INIT_BUILD'] === "Settlement") {
                                     $game->buildSettlement($_SESSION['TURN'], $x, $y, $bp);
@@ -48,7 +49,6 @@
                             // try to execute player options
                             $board = array();
                             $board = $game->getGameBoard();
-                            
                             /* @var $tile BoardTile */
                             $tile = $board[$x][$y];
                             $occupation = $tile->getOccupation($bp);
@@ -85,6 +85,6 @@
 		//exit;
 	}
         
-        //header("Location: $url");
-        //exit;
+        header("Location: $url");
+        exit;
 ?>

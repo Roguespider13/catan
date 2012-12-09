@@ -115,6 +115,37 @@ class GameManager	{
 			return $this->waitingGameList[$gameID];
 		return "";
 	}
+	
+	public function hasWaitingGame($playerID)
+	{
+		foreach ($this->waitingGameList as $waitGameID => $waitGameFile)
+		{
+			$contents = file($waitGameFile);
+			$creator = trim($contents[0]);
+			if ($playerID == $creator)
+				return $waitGameID;
+		}
+		return "";
+	}
+	
+	public function hasOngoingGame($playerID)
+	{
+		foreach ($this->currentGameList as $currGameID => $currGameFile)
+		{
+			$tempGame = new Game();
+			try
+			{
+				$tempGame->resumeGame($currGameID);
+			}
+			catch (Exception $e)
+			{	continue;
+			}
+			if ($tempGame->isPlayer($playerID))
+				return $currGameID;
+		}
+		
+		return "";
+	}
 
 	public function isGameIDAvailable($gameID)
 	{	return ! (array_key_exists($gameID, $this->currentGameList) || array_key_exists($gameID, $this->waitingGameList));	}

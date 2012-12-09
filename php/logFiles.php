@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <?php
     require_once 'force_authentication.php';
-    require_once 'gameManager.php';
+    //require_once 'gameManager.php';
 ?>
 <html>
 <head>
@@ -61,11 +61,28 @@
     </div>
   </div>
 
-  <div id="container-fluid">
-    <div class="row-fluid">
-      <div class="logs">
-        <!-- PUT THE LOGS STUFF HERE -->
-      </div>
+    <div id="container-fluid">
+        <div class="row-fluid">
+            <div class="logs">
+                <?php
+                    //require_once 'Game.php';
+                    require_once 'logManager.php';
+
+                    $logMan= new LogManager();
+                    $logs = $logMan->getCompletedLogs();
+                    //$logMan->doesCompletedLogExist($gameID);
+
+                    echo "<h3>Available log files</h3><ul>";
+                    foreach ($logs as $log) {
+                        //$logFile = $logMan->getCompletedLogFile($log);
+                        //if (strlen($logFile) > 0) {
+                            echo "<li><a href=\"readLog.php?file=" . htmlentities($log) . "\">" . htmlentities($log) . "</a></li>";
+                            //echo "<li><a href=\"" . htmlentities($logFile) . "\">" . htmlentities($log) . "</a></li>";
+                        //}
+                    }
+                    echo "</ul>";
+                ?>
+            </div>
+        </div>
     </div>
-  </div>
 </body>

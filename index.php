@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <head>
-    <title>TEST</title>
+    <title>eCatan</title>
     <link rel="shortcut icon" href="favicon.ico">
     <link rel = "stylesheet" type = "text/css" href = "css/bootstrap.css" media = "all">
     <link href='http://fonts.googleapis.com/css?family=Carrois+Gothic'

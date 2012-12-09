@@ -98,6 +98,9 @@ class LogManager
 		else
 			return "";
 	}
+	
+	public function getCompletedLogs()
+	{	return array_keys($this->completedGameLogs);}
 
 }
 ?>

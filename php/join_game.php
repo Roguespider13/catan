@@ -10,7 +10,25 @@
             $game = new Game();
             $game = $gm->createGame($_POST['game_id'], $_SESSION['username']);
             $_SESSION['GAMEID'] = $_POST['game_id'];
-            $_SESSION['FLOW'] = "";
+            $_SESSION['FLOW'] = "WAIT";
+            
+            $url = "/catan2/php/main.php";
+            header("Location: $url");
+            exit;
+        }
+        catch (Exception $e) {
+            $_SESSION['ERROR'] = $e->getMessage();
+            header("Location: $url");
+            exit;
+        }
+    }
+    elseif (isset($_POST['rejoin_game'])) {
+        try {
+            $gm = new GameManager();
+            $game = new Game();
+            $game->resumeGame($_SESSION['GAMEID']);
+            $_SESSION['GAMEID'] = $_POST['game_id'];
+            $_SESSION['FLOW'] = "WAIT";
             
             $url = "/catan2/php/main.php";
             header("Location: $url");

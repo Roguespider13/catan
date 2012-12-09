@@ -90,8 +90,9 @@ class UserManager
 		$wins = intval($userContents[3]);
 		$userContents[3] = strval($wins + 1);
 		
-		$usrHandle = fopen($this->getUserFileName($userName));
-		fwrite($usrHandle, $userContents[0] . ":" . $userContents[1] . ":" . $userContents[2] . ":" . $userContents[3] . ":" . $userContents[4]);
+		$usrHandle = fopen($this->getUserFileName($userName), "w");
+		fwrite($usrHandle, $userContents[0] . ":" . $userContents[1] . ":" . $userContents[2] . ":" . $userContents[3] . ":" . $userContents[4] . "\n");
+		fclose($usrHandle);
 	}
 	
 	public function addUserLoss($userName)
@@ -99,10 +100,11 @@ class UserManager
 		$fileContents = file($this->userFolder . $userName . ".usr");
 		$userContents = explode(":", trim($fileContents[0]));
 		$losses = intval($userContents[4]);
-		$userContents[3] = strval($losses + 1);
+		$userContents[4] = strval($losses + 1);
 		
-		$usrHandle = fopen($this->getUserFileName($userName));
-		fwrite($usrHandle, $userContents[0] . ":" . $userContents[1] . ":" . $userContents[2] . ":" . $userContents[3] . ":" . $userContents[4]);
+		$usrHandle = fopen($this->getUserFileName($userName), "w");
+		fwrite($usrHandle, $userContents[0] . ":" . $userContents[1] . ":" . $userContents[2] . ":" . $userContents[3] . ":" . $userContents[4] . "\n");
+		fclose($usrHandle);
 	}
 	
 	private function getUserFileName($userName)

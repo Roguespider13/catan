@@ -64,44 +64,57 @@
     </div>
 
             <?php
-                if (isset($_SESSION['ERROR'])) {
-                    echo htmlentities($_SESSION['ERROR']);
-                    unset($_SESSION['ERROR']);
-                }
-
                 $gm = new GameManager();
                 $game = new Game();
-                if ($gm->isGame($_SESSION['GAMEID']) === TRUE) {
-                    // The second player has joined the game, rebuild the game from XML.
+                try {
+                    if ($gm->isGame($_SESSION['GAMEID']) === TRUE) {
+                        // The second player has joined the game, rebuild the game from XML.
 
-                    $game->resumeGame($_SESSION['GAMEID']);
+                        $game->resumeGame($_SESSION['GAMEID']);
 
-                    // Get the game state/status and the turn values
-                    $_SESSION['STATUS'] = $game->getGameState();
-                    $_SESSION['TURN'] = $game->getPlayersTurn();
-                    $_SESSION['INIT_BUILD'] = $game->getInitialTurn();
-                    //$player = new Player($_SESSION['username']);
-                    $player = $game->getPlayer($_SESSION['username']);
-                    $cards = $player->getCardArray();
+                        // Get the game state/status and the turn values
+                        $_SESSION['STATUS'] = $game->getGameState();
+                        $_SESSION['TURN'] = $game->getPlayersTurn();
+                        $_SESSION['INIT_BUILD'] = $game->getInitialTurn();
+                        //$player = new Player($_SESSION['username']);
+                        $player = $game->getPlayer($_SESSION['username']);
+                        $cards = $player->getCardArray();
+                    }
+                    else {
+                        // Still waiting for a second player.
+                        $_SESSION['STATUS'] = "WAIT";
+                        $_SESSION['TURN'] = NULL;
+                        $_SESSION['FLOW'] = "";
+                    }
                 }
-                else {
-                    // Still waiting for a second player.
-                    $_SESSION['STATUS'] = "WAIT";
-                    $_SESSION['TURN'] = NULL;
-                    $_SESSION['FLOW'] = "";
+                catch (GameOverException $e) {
+                    $_SESSION['ERROR'] = $e->getErrorMessage();
+                    $_SESSION['STATUS'] = "GAMEOVER";
+                }
+                
+                if (isset($_SESSION['ERROR'])) {
+                    echo "<div class=\"gameOver\">" . htmlentities($_SESSION['ERROR']) . "</div><br />";
+                    unset($_SESSION['ERROR']);
+                }
+                
+                if ($_SESSION['username'] == $_SESSION['TURN']) {
+                    $_SESSION['FLOW'] = "OPTIONS";
                 }
 
-		echo "Welcome, " . $_SESSION['username'] . "!";
-                echo "&nbsp;&nbsp;Game ID: " . $_SESSION['GAMEID'];
-                echo "<br />Status: " . $_SESSION['STATUS'];
-                echo "<br />Turn: " . $_SESSION['TURN'];
+		//echo "Welcome, " . $_SESSION['username'] . "!";
+                //echo "&nbsp;&nbsp;Game ID: " . $_SESSION['GAMEID'];
+                //echo "<br />Status: " . $_SESSION['STATUS'];
+                //echo "<br />Turn: " . $_SESSION['TURN'];
+                //echo "<br />Flow: " . $_SESSION['FLOW'];
             ?>
 		</nav>
 		<div id = "left-sidebar">
                     <div>Dice-rolling section</div>
                     <?php
-                        if ($_SESSION['STATUS'] === "Ongoing" && !isset($_SESSION['DIE1']) &&
-                            !isset($_SESSION['DIE2']) && ($_SESSION['username'] == $_SESSION['TURN'])) {
+                        if ($_SESSION['STATUS'] === "Ongoing" &&
+                            !isset($_SESSION['DIE1']) &&
+                            !isset($_SESSION['DIE2']) &&
+                            ($_SESSION['username'] == $_SESSION['TURN'])) {
                                 echo "<a href=\"roll_dice.php\">Roll dice</a><br />";
                         }
 
@@ -114,13 +127,6 @@
             <b>Message to players</b><br />
             <?php
                 require_once 'gameFlow.php';
-            ?>
-            <?php
-                if ($gm->isGame($_SESSION['GAMEID']) === TRUE) {
-//                    foreach ($cards as $key => $value) {
-//                        echo $key . ": " . $value . "<br />";
-//                    }
-                }
             ?>
         </div>
     <?php
@@ -136,7 +142,7 @@
 		$settlement = "ni_settlement";
 		$hroad = "";
 		$vroad = "";
-
+                
 		if ($_SESSION['username'] === $_SESSION['TURN']) {
 			$settlement = "settlement";
 			$hroad = "hroad";

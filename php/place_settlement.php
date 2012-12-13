@@ -47,7 +47,7 @@
                             break;
                         case "Ongoing":
                             // try to execute player options
-                            $board = array();
+                            //$board = array();
                             $board = $game->getGameBoard();
                             /* @var $tile BoardTile */
                             $tile = $board[$x][$y];
